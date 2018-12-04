@@ -1,0 +1,240 @@
+<?php /*a:1:{s:68:"D:\www\myecshop\tp5\application\admin\view\goods_type\show_type.html";i:1543671267;}*/ ?>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ecshop</title>
+
+  <link href="/static/admin/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/admin/plugins/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/admin/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/admin/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+        page. However, you can choose any other skin. Make sure you
+        apply the skin class to the body tag so the changes take effect. -->
+  <link rel="stylesheet" href="/static/admin/css/skins/skin-blue.min.css">
+  <link rel="stylesheet" href="/static/admin/css/mystyle.css">
+  <link href="/static/common/iconfont/iconfont.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/admin/plugins/bootstrap-table/bootstrap-table.min.css" />
+  <style>
+    .good-search {
+      margin-right: 5px;
+    }
+
+    
+  </style>
+</head>
+
+<body>
+  <section class="content-header" >
+    <h1>
+      商品类型
+    </h1>
+
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="#">Forms</a></li>
+      <li class="active">General Elements</li>
+    </ol>
+
+    <button class="btn btn-primary btn-success action-btn">添加商品类型</button>
+  </section>
+
+  <section class="content">
+    <table id="goodsType-list">
+
+    </table>
+
+  </section>
+
+  <!-- Mainly scripts -->
+  <script src="/static/admin/js/jquery-3.1.1.min.js"></script>
+  <script src="/static/admin/js/bootstrap.min.js"></script>
+  <!-- <script src="/static/admin/js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
+  <script src="/static/admin/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+  <!-- Custom and plugin javascript -->
+  <!-- <script src="/static/admin/js/inspinia.js"></script> -->
+  <!-- AdminLTE App -->
+  <script src="/static/admin/js/adminlte.min.js"></script>
+  <script src="/static/admin/js/plugins/pace/pace.min.js"></script>
+  <script src="/static/admin/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+
+  <script>
+    var operateFormatter = function (value, row, index) {
+     
+        var html='<button  class="btn btn-info btn-sm rightSize detailBtn" type="button" style="margin-left:5px;margin-right:8px;"><i class="fa fa-paste"></i>&nbsp;属性列表</button>';
+        html+='<button  class="btn btn-danger btn-sm rightSize delBtn" type="button" style="margin-left:5px;margin-right:8px;"><i class="fa fa-paste"></i>&nbsp;删除</button>'
+        return html;
+
+
+    };
+    var formateGoodsTypeStatus = function (value, row, index) {
+      if (value == 1) {
+        return '<i class="iconfont icon-duigou1 text-green" ></i>';
+      } else {
+        return '<i class="iconfont icon-chacha text-danger"></i>';
+      }
+    }
+    var responseHandler = function (e) {
+      if (e.data && e.data.length > 0) {
+        return {
+          rows: e.data,
+          total: e.count
+        };
+      } else {
+        return {
+          rows: [],
+          total: 0
+        };
+      }
+    };
+
+    var rowStyle = function (row, index) {
+      var classesArr = ["success", "info"];
+      if (index % 2 === 0) {
+        //偶数行
+        return {
+          classes: classesArr[0]
+        };
+      } else {
+        //奇数行
+        return {
+          classes: classesArr[1]
+        };
+      }
+    };
+
+
+    var columns = [{
+        field: "type_name",
+        title: "商品类型名称",
+        align: "center",
+        width: 100,
+        /*colspan: 2*/
+        sortable: true,
+        sortName: "type_id",
+        order: "desc"
+      },
+      {
+        field: "attr_group",
+        title: "属性分组",
+        align: "center",
+        sortable: false //本列不可以排序
+      },
+      {
+        field: "attr_count",
+        title: "属性数",
+        align: "center",
+        sortable: false //本列不可以排序
+      },
+
+      {
+        field: "enabled",
+        title: "状态",
+        align: "center",
+        sortable: false,
+        formatter: formateGoodsTypeStatus
+      },
+
+      {
+        field: "operate",
+        title: "操作",
+        align: "left",
+        formatter: operateFormatter //自定义方法，添加操作按钮
+      }
+
+    ];
+
+    
+    $("#goodsType-list")
+      .bootstrapTable("destroy")
+      .bootstrapTable({
+
+        url: "/index.php/admin/goodsType/getTypeList",
+        method: "get", //使用get请求到服务器获取数据
+        dataType: "json",
+        contentType: "application/json,charset=utf-8",
+        // toolbar: "#toolbar", //一个jQuery 选择器，指明自定义的toolbar 例如:#toolbar, .toolbar.
+        uniqueId: "type_id", //类型id
+        // height: document.body.clientHeight - 320, //动态获取高度值，可以使表格自适应页面
+        height: 580,
+        cache: false, 
+        striped: true, 
+        queryParamsType: "limit", //设置为"undefined",可以获取pageNumber，pageSize，searchText，sortName，sortOrder
+
+        sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
+        sortable: true, //是否启用排序;意味着整个表格都会排序
+        // sortName: "goods_id", // 设置默认排序为 name
+        // sortOrder: "desc", //排序方式
+        pagination: true, //是否显示分页（*）
+        // search: true, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+        // strictSearch: true,
+        // showColumns: true, //是否显示所有的列
+        // showRefresh: true, //是否显示刷新按钮
+        // showToggle: true, //是否显示详细视图和列表视图
+        clickToSelect: true, //是否启用点击选中行
+        minimumCountColumns: 2, //最少允许的列数 clickToSelect: true, //是否启用点击选中行
+        pageNumber: 1, //初始化加载第一页，默认第一页
+        pageSize: 6, //每页的记录行数（*）
+        pageList: [10, 25, 50, 100], //可供选择的每页的行数（*）
+        paginationPreText: "上一页",
+        paginationNextText: "下一页",
+        paginationFirstText: "第一页",
+        paginationLastText: "末页",
+        responseHandler: responseHandler,
+        columns: columns,
+        rowStyle: rowStyle,
+        onLoadSuccess: function (data) {
+          //加载成功时执行
+          console.log('加载成功:');
+          console.log(data);
+        },
+        onLoadError: function (res) {
+          //加载失败时执行
+          console.log('加载失败:');
+          // console.log(res);
+        },
+        // 表格渲染完成后触发
+        onPostBody: function () {
+          console.log('表格渲染完成');
+          var table='#goodsType-list';
+          // 表格的每个查看按钮
+          var detailBtn = $(table+' tr .detailBtn');
+          console.log(detailBtn);
+
+         
+          // 每个商品类型的属性
+          detailBtn.on('click', function () {
+            var row = $(this).parent().parent();
+            // 获取每行的uniqueid 配置是uniqueId: "type_id"，表示商品类型id
+            var uniqueid = row.attr('data-uniqueid');
+            // 根据uniqueid获取行数据
+            var rowData = $(table).bootstrapTable('getRowByUniqueId', uniqueid);
+            console.log(rowData);
+            
+            // 获取当前行的商品类型id
+            var typeId=rowData.type_id;
+            console.log('当前行商品类型id:'+typeId);
+            window.location.href="/index.php/admin/goodsAttr/showAttribute.html?typeId="+typeId;
+            
+            
+          })
+        }
+
+
+      });
+
+    
+  </script>
+
+</body>
+
+</html>

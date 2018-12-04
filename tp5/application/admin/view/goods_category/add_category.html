@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ecshop</title>
+
+  <link href="__ADMIN__/css/bootstrap.min.css" rel="stylesheet">
+  <link href="__ADMIN__/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="__ADMIN__/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="__ADMIN__/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+        page. However, you can choose any other skin. Make sure you
+        apply the skin class to the body tag so the changes take effect. -->
+  <link rel="stylesheet" href="__ADMIN__/css/skins/skin-blue.min.css">
+  <link rel="stylesheet" href="__ADMIN__/css/mystyle.css">
+  <link href="__COMMON__/iconfont/iconfont.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="__ADMIN__/plugins/bootstrap-table/bootstrap-table.min.css" />
+  <style>
+    .good-search {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+
+<body class="skin-blue">
+  <section class="content-header">
+    <h1>
+      商品分类详情
+    </h1>
+
+    <ol class="breadcrumb clearfix">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="#">Forms</a></li>
+      <li class="active">General Elements</li>
+    </ol>
+    <!-- <button class="btn btn-primary btn-success action-btn" id="addAttr">添加属性</button> -->
+  </section>
+
+
+  <div class="panel panel-default">
+    <!-- <div class="panel-heading">
+      <h3 class="panel-title"><i class="fa fa-list"></i> 商品分类详情</h3>
+    </div> -->
+    <div class="panel-body">
+
+      <form method="post" action="/index.php/admin/goodsCategory/addCategoryOk" enctype="multipart/form-data" autocomplete="off">
+
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab_tongyong">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td>分类名称:</td>
+                  <td>
+                    <input type="text" value="" id="cat_name" name="cat_name" class="form-control" style="width:400px;float:left"
+                      error="">
+                    <span class="cate-name-error" style="display: none;">分类名称已经存在</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>上级分类：</td>
+                  <td>
+                    <div class="col-sm-4" style="padding-left: 0px;">
+                        <select class="form-control" name="parent_id" >
+                            <option value="0">顶级分类</option>
+                            <!-- 输出商品分类 -->
+                            <!-- very important -->
+                            {foreach name="list_cats" item="one"}
+                                <option value={$one.cat_id}>{$one.cat_name}</option>
+                                {foreach name="one.child" item="two"}
+                                    <option value={$two.cat_id}>&nbsp;&nbsp;&nbsp;&nbsp;{$two.cat_name}</option>
+                                    {/foreach}
+                            {/foreach}
+                  
+                  
+                          </select>
+                    </div>
+                    
+                  </td>
+                </tr>
+                <tr>
+                  <td>商品分类描述</td>
+                  <td>
+                    <textarea rows="3" cols="100" name="cat_desc"></textarea>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>分类图片</td>
+                  <td>
+
+                    <input onclick="Tool.uploadify('http://www.shopsn.io/upload.php/Upload/index/uploadNum/1/path/class/input/image/config/class_image_conf');"
+                      type="button" value="上传图片">
+
+                    <input type="text" value="" name="pic_url" id="image" class="form-control large img_url" readonly="readonly"
+                      style="width:500px;display:initial;">
+
+                  </td>
+                </tr>
+
+
+
+                <tr>
+                  <td>是否显示</td>
+                  <td>
+                    <label class="radio-inline" >
+                      <input type="radio" name="is_show" class="status" id="inlineRadio3" value="1"> 是
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="is_show" class="status" id="inlineRadio4" value="0"> 否
+                    </label>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="pull-right">
+          <input type="submit" class="btn btn-primary" data-toggle="tooltip" data-original-title="保存" value="保存">
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
