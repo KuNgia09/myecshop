@@ -1,0 +1,14 @@
+.content-header{
+  position: relative;
+}
+.content-header > .breadcrumb {
+  position: static;
+  float: none;
+  padding-left: 0px;
+}
+
+.content-header .action-btn{
+  position: absolute;
+  top:15px;
+  right: 15px;
+}

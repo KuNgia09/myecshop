@@ -1,0 +1,13 @@
+.nav.navbar-right > li > a {
+  color: #333;
+}
+
+#page-wrapper .page-title > span {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+#page-wrapper .page-title > a {
+  margin-left: 5px;
+  vertical-align: bottom;
+}
