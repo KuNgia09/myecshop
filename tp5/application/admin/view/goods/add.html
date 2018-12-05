@@ -104,7 +104,7 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">商品分类:</label>
                   <div class="col-sm-2">
-                    <select class="form-control " name="one_cat" onchange="getSubCat(this,'two_cat');">
+                    <select class="form-control " name="one_cat" id="one_cat" onchange="getSubCat(this,'#two_cat',2);">
                       <option value="0">请选择一级分类</option>
                       {volist name="list_one_cats" id="vo"}
                       <option value={$vo.cat_id}>{$vo.cat_name}</option>
@@ -112,15 +112,15 @@
                     </select>
                   </div>
                   <div class="col-sm-2">
-                    <select class="form-control" name="two_cat" onchange="getSubCat(this,'three_cat');">
-
+                    <select class="form-control" name="two_cat" id="two_cat" onchange="getSubCat(this,'#three_cat',3);">
+                      
                     </select>
                   </div>
 
 
                   <div class="col-sm-2">
                     <select class="form-control" name="three_cat" id='three_cat'>
-
+                     
                     </select>
                   </div>
 
@@ -390,11 +390,11 @@
                 </div>
               </div>
 
-              <!-- 提交 -->
               <div class="form-group" style="margin-top: 20px;">
                 <label class="col-sm-2 control-label"></label>
                 <div class="col-sm-2">
-                  <button class="btn btn-success" id="submit_form">提交</button>
+                  <!-- 表单内的<button>未指定类型时，默认的类型为submit，可以显式的修改为<button type="button">来阻止表单提交 -->
+                  <button type="button" class="btn btn-success" id="submit_form">提交</button>
                 </div>
               </div>
           </form>
@@ -430,24 +430,26 @@
       var data=$('#myform').formToArray();
 
       $.ajax({
-        url: '/index.php/admin/Goods/addOk',
+        url: '/index.php/admin/Goods/addOk.html',
         type: 'POST',
         data: data,
         success: function (data) {
           
         }
       });
-
+      // 组织表单的默认提交事件
+      return false;
 
     })
-    function getSubCat(obj, name) {
+    function getSubCat(obj, tag,level) {
       var catId = obj.value;
       if (catId == 0) {
         return;
       }
 
       var params = {
-        id: catId
+        id: catId,
+        level:level
       };
       // 获取子分类列表
       $.ajax({
@@ -456,7 +458,7 @@
         data: params,
 
         success: function (data) {
-          var tag = "select[name='" + name + "']";
+         
           console.log('获取子分类tag:' + tag);
           $(tag).html('');
           $(tag).append(data);

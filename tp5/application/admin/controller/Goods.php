@@ -44,7 +44,7 @@ class Goods extends Controller
     public function add()
     {
         // 先获取一级分类
-        $list_one_cats=Db::table('ecs_category')->field('cat_id,cat_name,parent_id')->where('parent_id',0)->select();
+        $list_one_cats=Db::table('ecs_category')->field('cat_id,cat_name,parent_id')->where('parent_id', 0)->select();
 
         //获取商品的品牌
         $goods_brand=Db::table('ecs_brand')->field('brand_id,brand_name')->select();
@@ -90,7 +90,8 @@ class Goods extends Controller
         // 商品重量=质量*单位
         $data['goods_weight']=$_POST['goods_weight']*$_POST['weight_unit'];
         
-        $data['goods_number']=$_POST['goods_number'];
+        // 库存
+        $data['stock']=$_POST['goods_number'];
         $data['warn_number']=$_POST['warn_number'];
 
         // 商品关键词
@@ -99,42 +100,100 @@ class Goods extends Controller
         $data['goods_brief']=$_POST['goods_brief'];
         // 商品备注
         $data['seller_note']=$_POST['seller_note'];
+        // 父级商品SPU
+        $data['p_id']=0;
 
-        // 插入商品的基本信息
-        Db::table('ecs_goods')->insert($data);
-        // 获取插入新商品的id
-        $goodsId = Db::table('ecs_goods')->getLastInsID();
         
-        // 商品属性存在的话 代表选择了属性
-        if (isset($_POST['attr_id_list'])) {
-            // 遍历所有的属性id
-            $attr_id_list=$_POST['attr_id_list'];
-            $attr_value_list=$_POST['attr_value_list'];
-            $attr_value_list_trim=[];
-            foreach ($attr_value_list as $key=>$attr_value) {
-                // 如果属性值为空或者为0 移除当前属性
-                if (empty($attr_value)) {
-                    // 使用unset不会改变索引
-                    unset($attr_id_list[$key]);
+        
+       
+        // 启动事务 需要注意的是MyISAM存储引擎不支持事务处理
+        Db::startTrans();
+        try {
+            // 插入商品的基本信息
+            Db::table('ecs_goods')->insert($data);
+            $goods_id = Db::table('ecs_goods')->getLastInsID();
+            // 商品属性存在的话 代表选择了属性
+            if (isset($_POST['attr_id_list'])) {
+                // 遍历所有的属性id
+                $attr_id_list=$_POST['attr_id_list'];
+                $attr_value_list=$_POST['attr_value_list'];
+                $attr_value_list_trim=[];
+                foreach ($attr_value_list as $key=>$attr_value) {
+                    // 如果属性值为空或者为0 移除当前属性
+                    if (empty($attr_value)) {
+                        // 使用unset不会改变索引
+                        unset($attr_id_list[$key]);
+                    }
                 }
+                $data_attr=[];
+          
+                foreach ($attr_id_list as $key=>$attr_id) {
+                    $res=['goods_id'=>$goodsId,'attr_id'=>$attr_id,'attr_value'=>$attr_value_list[$key]];
+                    $data_attr[]=$res;
+                }
+         
+                //  插入多维数组 将商品属性值保存到商品属性表中
+                Db::table('ecs_goods_attr')->insertAll($data_attr);
             }
-            $data_attr=[];
-            
-            foreach ($attr_id_list as $key=>$attr_id) {
-                $res=['goods_id'=>$goodsId,'attr_id'=>$attr_id,'attr_value'=>$attr_value_list[$key]];
-                $data_attr[]=$res;
-            }
-           
-            //  插入多维数组 将商品属性值保存到商品属性表中
-            Db::table('ecs_goods_attr')->insertAll($data_attr);
-        }
-        // 遍历商品规格
-        if(isset($_POST['item'])){
-          $items=$_POST['item'];
-          // 获取商品有多少种规格
-          $spec_cont=count($items);
-        }
+            // 遍历商品规格
+              if (isset($_POST['item'])) {
+                // 每种规格的商品信息
+                // 3_8:array(4)
+                // price:"100"
+                // preferential:"99"
+                // storeCount:"999"
+                // sku:"FK001"
+                // 2_8:array(4)
+                // price:"100"
+                // preferential:"99"
+                // storeCount:"999"
+                // sku:"FK002"
+                $specs=$_POST['item'];
+                // 获取商品有多少种规格
+                $spec_cont=count($specs);
+                //用来保存所有的子商品信息
+                $sub_goods_data=[];
+                $res=$data;
+                $spec_id=[];
+                foreach($specs as $key=>$value){
+                  $res['shop_price']=$value['price'];
+                  $res['price_memeber']=$value['preferential'];
+                  $res['stock']=$value['storeCount'];
+                  $res['p_id']=$goods_id;
+                  // 保存父级商品的每种规格商品
+                  $spec_goods_id=Db::table('ecs_goods')->insertGetId($res);
+                  $specs[$key]['goods_id']= $spec_goods_id;
+                }
+                $res=[];
+                $spec_key_data=[];
+                // 保存规格名的key值
+                foreach($specs as $key=>$value){
+                    $res['goods_id']=$value['goods_id'];
+                    // 多规格组成的key
+                    $res['key']=$key;
+                    $res['price']=$value['price'];
+                    $res['store_count']=$value['storeCount'];
+                    // 会员价
+                    $res['preferential']=$value['preferential'];
+                    $res['sku']=$value['sku'];
+                    $spec_key_data[]=$res;
+                }
+                Db::table('ecs_spec_goods_price')->insertAll($spec_key_data);
 
+
+
+
+            }
+            // 提交事务
+            Db::commit();
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+        }
+        
+        
+        
+        
     }
 
   
@@ -316,15 +375,23 @@ class Goods extends Controller
     //获取子分类
     public function getSubCats()
     {
-      // 获取当前分类id
-      $cat_id=$_POST['id'];
-      $sub_cats=Db::table('ecs_category')->field('cat_id,cat_name,parent_id')->where('parent_id',$cat_id)->select();
-      $html='';
-      foreach($sub_cats as $cat){
-        $html.="<option value={$cat['cat_id']}>{$cat['cat_name']}</option>";
-      }
-      return $html;
-
-
+        // 获取当前分类id
+        $cat_id=$_POST['id'];
+        $level=$_POST['level'];
+        $sub_cats=Db::table('ecs_category')->field('cat_id,cat_name,parent_id')->where('parent_id', $cat_id)->select();
+        
+        if($level==2){
+          $html='<option value="0">请选择二级分类</option>';
+        }
+        else if($level==3){
+          $html='<option value="0">请选择三级分类</option>';
+        }
+        else{
+          $html='<option value="0">请选择分类</option>';
+        }
+        foreach ($sub_cats as $cat) {
+            $html.="<option value={$cat['cat_id']}>{$cat['cat_name']}</option>";
+        }
+        return $html;
     }
 }
