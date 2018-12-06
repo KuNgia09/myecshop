@@ -76,8 +76,8 @@ class Goods extends Controller
         $data['cat_id']=$_POST['three_cat'];
         $data['brand_id']=$_POST['brand_id'];
         $data['suppliers_id']=$_POST['suppliers_id'];
-        // 市场价
-        $data['shop_price']=$_POST['shop_price'];
+        
+        $data['goods_price']=$_POST['shop_price'];
         // 促销价
         $data['promote_price']=$_POST['promote_price'];
         // 促销日期
@@ -85,8 +85,8 @@ class Goods extends Controller
         $data['promote_end_date']=$_POST['promote_end_date'];
 
         // 富文本编辑器 商品描述
-        $data['goods_desc']=$_POST['goods_desc'];
-
+        $data['goods_desc']=htmlentities($_POST['goods_desc']);
+        
         //对商品描述进行过滤
         // 商品重量=质量*单位
         $data['goods_weight']=$_POST['goods_weight']*$_POST['weight_unit'];
@@ -129,7 +129,7 @@ class Goods extends Controller
                 $data_attr=[];
           
                 foreach ($attr_id_list as $key=>$attr_id) {
-                    $res=['goods_id'=>$goodsId,'attr_id'=>$attr_id,'attr_value'=>$attr_value_list[$key]];
+                    $res=['goods_id'=>$goods_id,'attr_id'=>$attr_id,'attr_value'=>$attr_value_list[$key]];
                     $data_attr[]=$res;
                 }
          

@@ -8,6 +8,11 @@
 <script type="text/javascript" src="__HOME__/js/goods.js"></script>
 <script type="text/javascript" src="__HOME__/js/jqzoom-core.js"></script>
 
+<style>
+  .detail_bd .attr li{
+    float:none;
+  }
+</style>
 <!-- jqzoom 效果 -->
 <script type="text/javascript">
   $(function () {
@@ -218,25 +223,14 @@
           <li><span>商品编号： </span>{$data.goods_id}</li>
           <li class="market_price"><span>定价：</span><em>￥{$data['goods_price'] + 1000}</em></li>
           <li class="shop_price"><span>本店价：</span> <strong>￥{$data.goods_price}</strong> <a href="">(降价通知)</a></li>
-          <li><span>上架时间：</span>{$data.add_time|date='Y-m-d',###}</li>
+          <li><span>上架时间：</span>2018.12.6</li>
           <li class="star"><span>商品评分：</span> <strong></strong><a href="">(已有21人评价)</a></li>
           <!-- 此处的星级切换css即可 默认为5星 star4 表示4星 star3 表示3星 star2表示2星 star1表示1星 -->
         </ul>
         <form action="" method="post" class="choose">
           <ul>
-            <volist name='attrs' id='vol'>
-              <li class="product">
-                <dl>
-                  <dt>{$vol.attr_name}：</dt>
-                  <dd>
-                    <volist name='vol.attr_vals' id='vo'>
-                      <a <if condition='$key == 0'>class="selected"</if> href="javascript:;">{$vo}<input type="radio"
-                          name="color" value="{$vo}" checked="checked" /></a>
-                    </volist>
-                  </dd>
-                </dl>
-              </li>
-            </volist>
+            <!-- 这里显示商品规格 -->
+            <li>这里显示商品规格</li>
             <li>
               <dl>
                 <dt>购买数量：</dt>
@@ -280,15 +274,24 @@
         <div class="introduce detail_div none">
           <div class="attr mt15">
             <ul>
-              <volist name='single' id='sig'>
-                <li><span>{$sig.attr_name}：</span>{$sig.attr_value}</li>
-              </volist>
+              <!-- 商品属性 -->
+              {volist name='attrs' id='attr'}
+                <li><span>{$attr.attr_name}：</span>{$attr.attr_value}</li>
+              {/volist}
             </ul>
           </div>
 
           <div class="desc mt10">
             <!-- 此处的内容 一般是通过在线编辑器添加保存到数据库，然后直接从数据库中读出 -->
-            {$data.goods_introduce}
+              <!-- tp5.1防止xss攻击，默认在输出之前执行htmlentities函数 -->
+              <!-- 模板内的 $data.goods_desc|html_entity_decode 会转换为如下的形式 -->
+              <!-- <?php echo htmlentities(html_entity_decode($data['goods_desc'])); ?> -->
+              <!-- 防止添加htmlentities函数 加上raw函数 -->
+              {$data.goods_desc|html_entity_decode|raw}
+
+              <!-- 直接使用原生的php 输出模板变量 -->
+              <!-- <?php var_dump($data);?> -->
+            
           </div>
         </div>
         <!-- 商品介绍 end -->
