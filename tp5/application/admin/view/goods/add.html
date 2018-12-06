@@ -93,12 +93,6 @@
                   </div>
                 </div>
 
-                <!-- 商品货号 -->
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">商品货号</label>
-                  <div class="col-sm-2">
-                    <input type="text" name="goods_sn" class="form-control"></div>
-                </div>
 
                 <!-- 商品分类 -->
                 <div class="form-group">
@@ -434,7 +428,9 @@
         type: 'POST',
         data: data,
         success: function (data) {
-          
+          console.log('添加商品返回数据:');
+          console.log(data);
+          layer.msg(data.msg);
         }
       });
       // 组织表单的默认提交事件

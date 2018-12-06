@@ -13,6 +13,7 @@ use think\DB;
 // use Gregwar\Captcha\CaptchaBuilder;
 use think\Session;
 use Kint\Kint;
+use app\common\tool\DbUtil;
 
 class GoodsCategory extends Controller
 {
@@ -42,7 +43,7 @@ class GoodsCategory extends Controller
         //获取商品分类
         $cats=Db::table('ecs_category')->field('cat_id,parent_id,cat_name')->select();
         // 默认递归深度是2层
-        $list_cats=child($cats, 0);
+        $list_cats=DbUtil::child($cats, 0);
         
         $this->assign('list_cats', $list_cats);
         return $this->fetch('add_category');
@@ -77,17 +78,17 @@ class GoodsCategory extends Controller
         $offset=isset($_GET['offset'])?$_GET['offset']:0;
 
         // 以一级分类作为分页参数
-        dump($_GET);
+       
         $sql="SELECT COUNT(*) as count from ecs_category where parent_id=0 LIMIT 1";
         // 获取一级分类的个数
       
         $one_cat_count=Db::query($sql)[0]['count'];
-        dump($one_cat_count);
+        
         // 先获取一级分类
         $sql="SELECT * FROM ecs_category where parent_id=0 LIMIT $limit OFFSET $offset";
         $one_category=DB::query($sql);
       
-        dump($one_category);
+        
         if (!empty($one_category)) {
             // 获取一级分类下的id
             $cat_id_str=$this->joinId($one_category);
@@ -104,10 +105,9 @@ class GoodsCategory extends Controller
         // 将一级分类 二级 三级分类合并
         $goods_category=array_merge($one_category, $two_category, $three_category);
         $args=['cat_id','parent_id','cat_name'];
-        $list_cats=tree($goods_category, 0, 0, $args);
-        dump($list_cats);
+        $list_cats=DbUtil::tree($goods_category, 0, 0, $args);
+        
 
-      
         ob_clean();
         // 转换为json
         $list=array('count'=>$one_cat_count,'data'=>$list_cats);

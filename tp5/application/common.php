@@ -10,4 +10,4 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
-require 'application/admin/common/function.php';
+require 'application/common/common.php';

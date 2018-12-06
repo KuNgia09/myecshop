@@ -10,9 +10,10 @@ require_once './vendor/autoload.php';
 
 use think\Controller;
 use think\DB;
-use app\admin\common\tool\ArrayChildren;
 use think\Session;
 use Kint\Kint;
+use app\common\tool\DbUtil;
+use app\common\tool\ArrayChildren;
 
 // 引入工具类
 
@@ -25,9 +26,10 @@ class Goods extends Controller
     {
       
         //获取商品分类
+        //只显示父商品 p_id==0
         $cats=Db::table('ecs_category')->field('cat_id,parent_id,cat_name')->select();
         
-        $list_cats=child($cats, 0);
+        $list_cats=DbUtil::child($cats, 0);
         // Kint::dump($list_cats);
 
         // 获取品牌列表
@@ -69,10 +71,9 @@ class Goods extends Controller
     {
         $data=[];
         $data['goods_name']=$_POST['goods_name'];
-        $data['goods_sn']=$_POST['goods_sn'];
+        
         // 商品三级分类
         $data['cat_id']=$_POST['three_cat'];
-        $data['goods_sn']=$_POST['goods_sn'];
         $data['brand_id']=$_POST['brand_id'];
         $data['suppliers_id']=$_POST['suppliers_id'];
         // 市场价
@@ -136,7 +137,7 @@ class Goods extends Controller
                 Db::table('ecs_goods_attr')->insertAll($data_attr);
             }
             // 遍历商品规格
-              if (isset($_POST['item'])) {
+            if (isset($_POST['item'])) {
                 // 每种规格的商品信息
                 // 3_8:array(4)
                 // price:"100"
@@ -155,19 +156,28 @@ class Goods extends Controller
                 $sub_goods_data=[];
                 $res=$data;
                 $spec_id=[];
-                foreach($specs as $key=>$value){
-                  $res['shop_price']=$value['price'];
-                  $res['price_memeber']=$value['preferential'];
-                  $res['stock']=$value['storeCount'];
-                  $res['p_id']=$goods_id;
-                  // 保存父级商品的每种规格商品
-                  $spec_goods_id=Db::table('ecs_goods')->insertGetId($res);
-                  $specs[$key]['goods_id']= $spec_goods_id;
+                foreach ($specs as $key=>$value) {
+                    $res['shop_price']=$value['price'];
+                    $res['price_member']=$value['preferential'];
+                    $res['stock']=$value['storeCount'];
+                    $res['p_id']=$goods_id;
+                    // 修改多规格商品的标题
+                    // 分析key值 获取每种规格项的名称
+                    $opts=explode('_',$key);
+                    $str='';
+                    foreach($opts as $opt){
+                      // 获取每种规格项的名称 例如 白色  黑色 1寸 等等
+                      $str.=" ".Db::table('ecs_goods_spec_item')->where('id',$opt)->value('item');
+                    }
+                    $res['goods_name']=$data['goods_name'].$str;
+                    // 保存父级商品的每种规格商品
+                    $spec_goods_id=Db::table('ecs_goods')->insertGetId($res);
+                    $specs[$key]['goods_id']= $spec_goods_id;
                 }
                 $res=[];
                 $spec_key_data=[];
                 // 保存规格名的key值
-                foreach($specs as $key=>$value){
+                foreach ($specs as $key=>$value) {
                     $res['goods_id']=$value['goods_id'];
                     // 多规格组成的key
                     $res['key']=$key;
@@ -179,30 +189,40 @@ class Goods extends Controller
                     $spec_key_data[]=$res;
                 }
                 Db::table('ecs_spec_goods_price')->insertAll($spec_key_data);
-
-
-
-
             }
             // 提交事务
             Db::commit();
+            return WSTReturn('添加商品成功', 1);
         } catch (\Exception $e) {
             // 回滚事务
             Db::rollback();
+            return WSTReturn('添加商品失败', -1);
         }
-        
-        
-        
-        
     }
-
-  
 
     // ajax获取商品列表
     public function getGoodsList()
     {
-        // 获取商品列表
-        $goods=queryList('ecs_goods');
+        // 检查分页查询参数
+        $length=isset($_GET['limit'])?$_GET['limit']:"";
+        $offset=isset($_GET['offset'])?$_GET['offset']:"";
+        $sort=isset($_GET['sort'])?$_GET['sort']:"";
+        $order=isset($_GET['order'])?$_GET['order']:"";
+
+        // 只显示p_id==0的商品 表示父商品
+        $sql="select * from ecs_goods where p_id=0";
+        if (!empty($sort)) {
+            $sql=$sql." order by $sort";
+            if (!empty($order)) {
+                $sql=$sql." $order";
+            }
+        }
+        if (!empty($length)) {
+            $sql=$sql." limit $length offset $offset";
+        }
+            
+        $goods=Db::query($sql);
+
         $count=Db::table('ecs_goods')->count();
         // Kint::dump('商品数量:'.$goods);
         $list=array('count'=>$count,'data'=>$goods);
@@ -380,14 +400,12 @@ class Goods extends Controller
         $level=$_POST['level'];
         $sub_cats=Db::table('ecs_category')->field('cat_id,cat_name,parent_id')->where('parent_id', $cat_id)->select();
         
-        if($level==2){
-          $html='<option value="0">请选择二级分类</option>';
-        }
-        else if($level==3){
-          $html='<option value="0">请选择三级分类</option>';
-        }
-        else{
-          $html='<option value="0">请选择分类</option>';
+        if ($level==2) {
+            $html='<option value="0">请选择二级分类</option>';
+        } elseif ($level==3) {
+            $html='<option value="0">请选择三级分类</option>';
+        } else {
+            $html='<option value="0">请选择分类</option>';
         }
         foreach ($sub_cats as $cat) {
             $html.="<option value={$cat['cat_id']}>{$cat['cat_name']}</option>";

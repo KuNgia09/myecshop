@@ -26,7 +26,7 @@ class GoodsAttr extends Controller
       
         $goods_type=Db::name('ecs_goods_type')->field('type_id,type_name')->select();
         $GLOBALS['goods_type']=$goods_type;
-        dump($goods_type);
+        
         $this->assign('list_type', $goods_type);
         ob_clean();
         return $this->fetch('show_attribute');
