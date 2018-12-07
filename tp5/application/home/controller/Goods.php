@@ -20,7 +20,7 @@ class Goods extends Controller
     public function goodsDetail()
     {
         // 判断是不是整数
-        $id=135;
+        $id=99;
         $goods=Db::table('ecs_goods')->where('goods_id',$id)->find();
         
         $goods_name=$goods['goods_name'];
@@ -58,10 +58,15 @@ class Goods extends Controller
           $spec_goods_price=Db::query($sql);
           
           $res=[];
+          $current_spec_key=[];
           // 获取这种形式的key 20_24_26 
           // 将key的每个unit单元提取出来
           foreach($spec_goods_price as $key=>$value){
             $spec_key=$value['key'];
+            // 获取当前商品的key值
+            if($value['goods_id']==$id){
+              $current_spec_key=explode('_',$spec_key);
+            }
             $res[]=str_replace('_',",",$spec_key);
           }
           // 将所有的规格项id组合起来
@@ -79,11 +84,15 @@ class Goods extends Controller
             }
           }
 
-          // 获取规格名称 如颜色
+          // 获取规格名称 如颜色 尺寸
           $sql="SELECT * FROM ecs_goods_spec WHERE (id in ($id_string))";
           $goods_spec=Db::query($sql);
 
           // 将规格名和对应的规格项联合起来
+          // 形成如下的结构：
+          // 颜色： 黑色 白色
+          // 尺寸：5寸 6寸
+          // 单位：件 包
           foreach($goods_spec as $key=>$spec){
             $spec_id=$spec['id'];
             // 遍历规格项
@@ -93,6 +102,21 @@ class Goods extends Controller
               }
             }
           }
+          //array(6)
+          // id:1
+          // type_id:4
+          // name:"颜色"
+          // sort:20
+          // is_show:1
+          // children:array(2)
+              // 0:array(3)
+              // id:1
+              // spec_id:1
+              // item:"白色"
+              // 1:array(3)
+              // id:2
+              // spec_id:1
+              // item:"黑色"
           
 
         
@@ -100,10 +124,12 @@ class Goods extends Controller
           
 
         }
-
+      
         // 商品通用信息
         $this->assign('data',$goods);
         // 商品规格信息
+        $this->assign('specData',$goods_spec);
+        $this->assign('spec_key',$current_spec_key);
         $this->assign('attrs',$goods_attrs);
         return $this->fetch('detail');
     }

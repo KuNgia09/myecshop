@@ -12,6 +12,35 @@
   .detail_bd .attr li{
     float:none;
   }
+
+  .product>dl>dt{
+    width: 84px;
+    height: 26px;
+    text-align: right;
+  }
+  .product>dl>dd>span{
+    display: inline-block;
+    padding: 0 5px;
+    margin: 2px 10px;
+    height: 24px;
+    border: 1px solid #ededed;
+    color: #666;
+    text-align: center;
+    font-size: .75rem;
+    line-height: 1.5rem;
+    cursor: pointer;
+    width:40px;
+    min-width:40px;
+    
+  }
+
+  .product>dl>dd>span.active{
+    padding: 0 5px;
+    height: 26px;
+    border: 1px solid #9C0F18;
+  }
+  
+
 </style>
 <!-- jqzoom 效果 -->
 <script type="text/javascript">
@@ -229,8 +258,28 @@
         </ul>
         <form action="" method="post" class="choose">
           <ul>
-            <!-- 这里显示商品规格 -->
-            <li>这里显示商品规格</li>
+            <!-- 这里显示商品规格 -->     
+            {if condition="!empty($specData)"}
+              {foreach name="specData" key ="key" item="item"}
+              <li class="product">
+                  <dl>
+                      <dt class="fl" value="{$item['id']}">{$item['name']}:</dt>
+                      <dd class="fl" >                         
+                        {foreach name="item['children']" key="itemKey" item="value"}
+                            <!-- $value.id是整型 $spec_key是字符串型 in_array的第三个参数weifalse会忽略比较的类型 -->
+                            <span class='{if condition="false!==in_array($value.id,$spec_key)"}active{/if}'>
+                                {$value.item}
+                            </span>
+                        {/foreach}
+                        
+                      </dd>
+
+                  </dl>
+              </li>
+              {/foreach}
+            {/if}
+            </li>
+
             <li>
               <dl>
                 <dt>购买数量：</dt>

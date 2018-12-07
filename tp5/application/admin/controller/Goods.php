@@ -157,7 +157,7 @@ class Goods extends Controller
                 $res=$data;
                 $spec_id=[];
                 foreach ($specs as $key=>$value) {
-                    $res['shop_price']=$value['price'];
+                    $res['goods_price']=$value['price'];
                     $res['price_member']=$value['preferential'];
                     $res['stock']=$value['storeCount'];
                     $res['p_id']=$goods_id;
@@ -170,7 +170,7 @@ class Goods extends Controller
                       $str.=" ".Db::table('ecs_goods_spec_item')->where('id',$opt)->value('item');
                     }
                     $res['goods_name']=$data['goods_name'].$str;
-                    // 保存父级商品的每种规格商品
+                    // 保存每种规格商品
                     $spec_goods_id=Db::table('ecs_goods')->insertGetId($res);
                     $specs[$key]['goods_id']= $spec_goods_id;
                 }
