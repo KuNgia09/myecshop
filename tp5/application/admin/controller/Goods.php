@@ -23,8 +23,7 @@ class Goods extends Controller
 {
     // 显示商品列表页面
     public function showList()
-    {
-      
+    { 
         //获取商品分类
         //只显示父商品 p_id==0
         $cats=Db::table('ecs_category')->field('cat_id,parent_id,cat_name')->select();
@@ -86,13 +85,9 @@ class Goods extends Controller
 
         // 富文本编辑器 商品描述
         $data['goods_desc']=htmlentities($_POST['goods_desc']);
-        
-        //对商品描述进行过滤
-        // 商品重量=质量*单位
-        $data['goods_weight']=$_POST['goods_weight']*$_POST['weight_unit'];
-        
+           
         // 库存
-        $data['stock']=$_POST['goods_number'];
+        $data['stock']=$_POST['stock'];
         $data['warn_number']=$_POST['warn_number'];
 
         // 商品关键词
@@ -103,10 +98,9 @@ class Goods extends Controller
         $data['seller_note']=$_POST['seller_note'];
         // 父级商品SPU
         $data['p_id']=0;
-
-        
-        
-       
+        // 是否为多规格商品
+        $data['is_spec']=empty($_POST['item'])?0:1;
+ 
         // 启动事务 需要注意的是MyISAM存储引擎不支持事务处理
         Db::startTrans();
         try {
@@ -137,7 +131,7 @@ class Goods extends Controller
                 Db::table('ecs_goods_attr')->insertAll($data_attr);
             }
             // 遍历商品规格
-            if (isset($_POST['item'])) {
+            if (!empty($_POST['item'])) {
                 // 每种规格的商品信息
                 // 3_8:array(4)
                 // price:"100"
@@ -150,15 +144,15 @@ class Goods extends Controller
                 // storeCount:"999"
                 // sku:"FK002"
                 $specs=$_POST['item'];
-                // 获取商品有多少种规格
-                $spec_cont=count($specs);
+
+                
                 //用来保存所有的子商品信息
                 $sub_goods_data=[];
                 $res=$data;
                 $spec_id=[];
                 foreach ($specs as $key=>$value) {
                     $res['goods_price']=$value['price'];
-                    $res['price_member']=$value['preferential'];
+                    $res['member_price']=$value['preferential'];
                     $res['stock']=$value['storeCount'];
                     $res['p_id']=$goods_id;
                     // 修改多规格商品的标题
@@ -199,6 +193,39 @@ class Goods extends Controller
             return WSTReturn('添加商品失败', -1);
         }
     }
+    
+    /**
+     * 弹出iframe框 获取子商品
+     *
+     * @return void
+     */
+    public function lookGoods($id){
+        if(!is_numeric($id)){
+          return ;
+        }
+        //查看当前id下的子商品信息
+        $goods=Db::table('ecs_goods')->where('p_id',$id)->select();
+        $this->assign('data_goods',$goods);
+        return $this->fetch('look_goods');
+
+    }
+
+    private function joinSql($sql,$params){
+      $length=$params['length'];
+      $offset=$params['offset'];
+      $sort=$params['sort'];
+      $order=$params['order'];
+        if (!empty($sort)) {
+          $sql=$sql." order by $sort";
+          if (!empty($order)) {
+              $sql=$sql." $order";
+          }
+      }
+      if (!empty($length)) {
+          $sql=$sql." limit $length offset $offset";
+      }
+      return $sql;
+    }
 
     // ajax获取商品列表
     public function getGoodsList()
@@ -208,18 +235,14 @@ class Goods extends Controller
         $offset=isset($_GET['offset'])?$_GET['offset']:"";
         $sort=isset($_GET['sort'])?$_GET['sort']:"";
         $order=isset($_GET['order'])?$_GET['order']:"";
-
+        $params=[];
+        $params['length']=$length;
+        $params['offset']=$offset;
+        $params['sort']=$sort;
+        $params['order']=$order;
         // 只显示p_id==0的商品 表示父商品
-        $sql="select * from ecs_goods where p_id=0";
-        if (!empty($sort)) {
-            $sql=$sql." order by $sort";
-            if (!empty($order)) {
-                $sql=$sql." $order";
-            }
-        }
-        if (!empty($length)) {
-            $sql=$sql." limit $length offset $offset";
-        }
+        $sql="select goods_id,goods_name,goods_price,is_shelves,is_recommend,stock,is_spec from ecs_goods where p_id=0";
+        $sql=$this->joinSql($sql,$params);
             
         $goods=Db::query($sql);
 

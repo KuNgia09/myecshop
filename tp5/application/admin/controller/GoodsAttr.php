@@ -23,10 +23,8 @@ class GoodsAttr extends Controller
         dump('type_id:'.$type_id);
         $this->assign('type_id', $type_id);
         // 获取所有的商品类型
-      
         $goods_type=Db::name('ecs_goods_type')->field('type_id,type_name')->select();
-        $GLOBALS['goods_type']=$goods_type;
-        
+       
         $this->assign('list_type', $goods_type);
         ob_clean();
         return $this->fetch('show_attribute');

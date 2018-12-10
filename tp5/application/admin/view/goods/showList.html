@@ -42,7 +42,7 @@
     </ol>
     <button class="btn btn-primary btn-success action-btn">添加新商品</button>
   </section>
-
+  
   <section class="content">
     <div id="toolbar" class="clearfix" style="margin-bottom:5px;">
       <div class="pull-left good-search" style="padding-top:5px;">
@@ -116,31 +116,28 @@
   <!-- Mainly scripts -->
   <script src="__ADMIN__/js/jquery-3.1.1.min.js"></script>
   <script src="__ADMIN__/js/bootstrap.min.js"></script>
+  <script src="__COMMON__/plugins/layer/layer.js"></script>
+
   <!-- <script src="__ADMIN__/js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
   <script src="__ADMIN__/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-  <!-- Custom and plugin javascript -->
-  <!-- <script src="__ADMIN__/js/inspinia.js"></script> -->
-  <!-- AdminLTE App -->
-  <script src="__ADMIN__/js/adminlte.min.js"></script>
-  <script src="__ADMIN__/js/plugins/pace/pace.min.js"></script>
   <script src="__ADMIN__/plugins/bootstrap-table/bootstrap-table.min.js"></script>
 
   <script>
     var operateFormatter = function (value, row, index) {
-      // console.log('value:' + value + ';row:' + row + 'index:' + index);
-      // 如果存在附件
-      if (value == 1) {
-        return [
-          '<button  class="btn btn-info btn-sm rightSize detailBtn" type="button" style="margin-left:5px;margin-right:8px;"><i class="fa fa-paste"></i>&nbsp;查看</button>',
-          '<button class="btn btn-danger btn-sm rightSize downBtn" type="button"><i class="fa fa-envelope"></i>&nbsp;下载</button>'
-        ].join("");
-      } else {
-        return '<button  class="btn btn-info btn-sm rightSize detailBtn" type="button" style="margin-left:5px;"><i class="fa fa-paste"></i>&nbsp;查看</button>';
-      }
-
-
+        var goods_id=row.goods_id;
+        var click='getGoodsDetail('+goods_id+')';
+        
+        // 判断是否为规格商品
+        if(row.is_spec==0){
+          return '<a target="_blank" href="/index.php/home/goods/goodsDetail/id/'+goods_id+'" style="margin-left:5px;"><button  class="btn btn-info btn-sm rightSize detailBtn"><i class="fa fa-paste"></i>&nbsp;查看</button></a>';
+        }
+        else{
+          return '<button  class="btn btn-info btn-sm rightSize detailBtn" onclick="'+click+'"  type="button" style="margin-left:5px;"><i class="fa fa-paste"></i>&nbsp;查看</button>';
+        }
+        
     };
+
     var formateGoodsStatus = function (value, row, index) {
       if (value == 1) {
         return '<i class="iconfont icon-duigou text-green" ></i>';
@@ -200,40 +197,29 @@
     },
   
     {
-      field: "market_price",
+      field: "goods_price",
       title: "价格",
       align: "center"
     },
     {
-      field: "is_on_sale",
-      title: "上架",
+      field: "is_shelves",
+      title: "是否上架",
       align: "center",
       clickToSelect: false,
       formatter: formateGoodsStatus
     },
     {
-      field: "is_best",
-      title: "精品",
+      field: "is_recommend",
+      title: "是否推荐",
       align: "center",
       halign: "center", //设置表头列居中对齐
 
       formatter: formateGoodsStatus
     },
-    {
-      field: "is_new",
-      title: "新品",
-      align: "center",
-      formatter: formateGoodsStatus
-    },
-    {
-      field: "is_hot",
-      title: "热销",
-      align: "center",
-      formatter: formateGoodsStatus
-    },
+   
 
     {
-      field: "goods_number",
+      field: "stock",
       title: "库存",
       align: "center",
 
@@ -269,11 +255,6 @@
         sortName: "goods_id", // 设置默认排序为 name
         sortOrder: "desc", //排序方式
         pagination: true, //是否显示分页（*）
-        // search: true, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
-        // strictSearch: true,
-        // showColumns: true, //是否显示所有的列
-        // showRefresh: true, //是否显示刷新按钮
-        // showToggle: true, //是否显示详细视图和列表视图
         clickToSelect: true, //是否启用点击选中行
         minimumCountColumns: 2, //最少允许的列数 clickToSelect: true, //是否启用点击选中行
         pageNumber: 1, //初始化加载第一页，默认第一页
@@ -313,7 +294,30 @@
       $("#goods-list").bootstrapTable('refresh', myObject);
 
     });
-
+    
+    // 查看商品详情
+    function getGoodsDetail(id){
+      console.log('查询商品信息:'+id);
+      var width=1000;
+      var height=600;
+      //this 是当前iframe窗口;
+      var a=this;
+      var b=window.parent;
+      var c=window;
+      if(a==c){
+        console.log('this == window');
+      }
+      var d=parent;
+      // 在父窗口显示iframe层 父窗口需要加载layer
+     parent.layer.open({
+          type: 2,
+          title: '商品详情',
+          shadeClose: true,
+          shade: 0.8,
+          area: [width + 'px', height + 'px'],
+          content: '/index.php/admin/goods/lookGoods/id/'+id+'.html' //iframe的url
+        }); 
+    }
   </script>
 
 </body>

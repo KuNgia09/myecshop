@@ -241,25 +241,13 @@
               </div>
               <!-- /.tab-pane -->
               <div class="tab-pane" id="tab_3">
-                <!-- 商品重量 -->
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">商品重量:</label>
-                  <div class="col-sm-3">
-                    <input type="text" class="form-control" name="goods_weight" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')"></div>
-                  <div style="display:inline-block;">
-                    <select class="form-control " name="weight_unit">
-                      <option value="1">克</option>
-                      <option value="0.001">千克</option>
-                    </select>
-
-                  </div>
-                </div>
+                
 
                 <!-- 库存数量 -->
                 <div class="form-group">
                   <label class="col-sm-2 control-label">商品库存数量:</label>
                   <div class="col-sm-4">
-                    <input type="text" name="goods_number" class="form-control" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" style="width:50%;">
+                    <input type="text" name="stock" class="form-control" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" style="width:50%;">
                     <span class="help-block m-b-none text-navy">
                       库存在商品为虚货或商品存在货品时为不可编辑状态，库存数值取决于其虚货数量或货品数量
                     </span>
@@ -522,6 +510,7 @@
       } else {
         $(tag).removeClass('btn-default');
         $(tag).addClass('btn-success');
+        
       }
     }
 

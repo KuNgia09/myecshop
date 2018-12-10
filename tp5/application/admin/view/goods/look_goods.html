@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ecshop</title>
+
+  <link href="__ADMIN__/css/bootstrap.min.css" rel="stylesheet">
+  <link href="__ADMIN__/plugins/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="__ADMIN__/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="__ADMIN__/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+        page. However, you can choose any other skin. Make sure you
+        apply the skin class to the body tag so the changes take effect. -->
+  <link rel="stylesheet" href="__ADMIN__/css/skins/skin-blue.min.css">
+  <link rel="stylesheet" href="__ADMIN__/css/mystyle.css">
+  <link href="__COMMON__/iconfont/iconfont.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="__ADMIN__/plugins/bootstrap-table/bootstrap-table.min.css" />
+  <style>
+    .good-search {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <tr height="30px">
+                <th class="sorting text-left">ID</th>
+                <th class="sorting text-left">商品名称</th>
+                <!--  <th class="sorting text-left">货号</th> -->
+                <th class="sorting text-left">商品分类</th>
+                <th valign="middle">市场价</th>
+                <th class="sorting text-left">会员价</th>
+                <th class="sorting text-left">库存</th>
+                <th class="sorting text-left">是否上架</th>
+                <th class="sorting text-left">是否推荐</th>
+                <th class="sorting text-left">操作</th>
+              </tr>
+              <tbody id="goos_table">
+                {if condition="!empty($data_goods)"}
+                  {foreach name="data_goods" item="list"}
+                    <tr>
+                      <td class="text-left">{$list.goods_id}</td>
+                      <td class="text-left" width="157px">{$list.goods_name}</td>
+                     
+                      <td class="text-left">手机</td>
+                      <td class="text-left">{$list.goods_price}</td>
+                      <td class="text-left">{$list.member_price}</td>
+                      <td class="text-left">{$list.stock}</td>
+                      <td class="text-left">
+                        {if condition="($list.is_shelves) eq 1"}
+                          <img src="__COMMON__/img/yes.png" />
+                          {else /}
+                          <img src="__COMMON__/img/cancel.png" />
+                        {/if}
+                      </td>
+                      <td class="text-left">
+                        {if condition="($list.is_recommend) eq 1"}
+                          <img src="__COMMON__/img/yes.png" />
+                          {else /}
+                          <img src="__COMMON__/img/cancel.png" />
+                        {/if}
+                      </td>
+                      <td>
+                        <a target="_blank" class="btn btn-primary" href="/index.php/home/goods/goodsDetail/id/{$list.goods_id}">预览</a>
+                        <a target="_blank" class="btn btn-danger del_btn confirm_btn" onclick="">删除</a>
+                      </td>
+                    </tr>
+                  {/foreach}
+                {/if}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+<!-- Mainly scripts -->
+<script src="__ADMIN__/js/jquery-3.1.1.min.js"></script>
+<script src="__ADMIN__/js/bootstrap.min.js"></script>
+
+</html>

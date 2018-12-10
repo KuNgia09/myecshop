@@ -17,17 +17,20 @@ class Goods extends Controller
     }
 
     // 商品详情
-    public function goodsDetail()
+    public function goodsDetail($id)
     {
         // 判断是不是整数
-        $id=99;
+        if(!is_numeric($id)){
+          return;
+        }
+
         $goods=Db::table('ecs_goods')->where('goods_id',$id)->find();
         
         $goods_name=$goods['goods_name'];
-        $view = new View();
-        $view->name = $goods['goods_desc'];
+       
 
         // 查询商品的属性
+        $goods_attrs=[];
         $goods_attrs=Db::table('ecs_goods_attr')->field('attr_id,attr_value')->where('goods_id',$id)->select();
         foreach($goods_attrs as $key=>$attr){
           $attr_id=$attr['attr_id'];
@@ -40,6 +43,8 @@ class Goods extends Controller
         //查询多规格商品
         // 首先获取父级商品的信息
         $p_id=$goods['p_id'];
+        $goods_spec=[];
+        $current_spec_key=[];
         // $p_id为0表示这是父级商品
         if($p_id!=0){
           // 查询多规格子商品信息
@@ -87,6 +92,7 @@ class Goods extends Controller
           // 获取规格名称 如颜色 尺寸
           $sql="SELECT * FROM ecs_goods_spec WHERE (id in ($id_string))";
           $goods_spec=Db::query($sql);
+          
 
           // 将规格名和对应的规格项联合起来
           // 形成如下的结构：

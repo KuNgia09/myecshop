@@ -29,7 +29,7 @@
     font-size: .75rem;
     line-height: 1.5rem;
     cursor: pointer;
-    width:40px;
+   
     min-width:40px;
     
   }
@@ -267,8 +267,8 @@
                       <dd class="fl" >                         
                         {foreach name="item['children']" key="itemKey" item="value"}
                             <!-- $value.id是整型 $spec_key是字符串型 in_array的第三个参数weifalse会忽略比较的类型 -->
-                            <span class='{if condition="false!==in_array($value.id,$spec_key)"}active{/if}'>
-                                {$value.item}
+                            <span class='{if condition="false!==in_array($value.id,$spec_key)"}active{/if}' value="{$value.id}">
+                                {$value.item|raw}
                             </span>
                         {/foreach}
                         
@@ -580,4 +580,16 @@
 
 <script type="text/javascript">
   document.execCommand("BackgroundImageCache", false, true);
+</script>
+<script>
+  // 点击商品规格选项
+  $('.product dd>span').click(function(){
+    console.log('商品规格 span点击了');
+    if(!$(this).hasClass('active')){
+      $(this).addClass('active');
+      $(this).siblings().removeClass('active');
+    }
+   
+      
+  })
 </script>
