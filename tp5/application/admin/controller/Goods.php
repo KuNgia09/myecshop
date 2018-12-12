@@ -23,7 +23,7 @@ class Goods extends Controller
 {
     // 显示商品列表页面
     public function showList()
-    { 
+    {
         //获取商品分类
         //只显示父商品 p_id==0
         $cats=Db::table('ecs_category')->field('cat_id,parent_id,cat_name')->select();
@@ -63,7 +63,19 @@ class Goods extends Controller
         return $this ->fetch('add');
     }
 
-    
+    /**
+     * 保存商品
+     *
+     * @return void
+     */
+    public function save()
+    {
+        $data=input('post.');
+        // 商品规格
+        $spec_item = input('item/a');
+        $goods = new \app\common\model\Goods();
+        
+    }
 
     // 获取添加新商品的信息
     public function addOK()
@@ -157,11 +169,11 @@ class Goods extends Controller
                     $res['p_id']=$goods_id;
                     // 修改多规格商品的标题
                     // 分析key值 获取每种规格项的名称
-                    $opts=explode('_',$key);
+                    $opts=explode('_', $key);
                     $str='';
-                    foreach($opts as $opt){
-                      // 获取每种规格项的名称 例如 白色  黑色 1寸 等等
-                      $str.=" ".Db::table('ecs_goods_spec_item')->where('id',$opt)->value('item');
+                    foreach ($opts as $opt) {
+                        // 获取每种规格项的名称 例如 白色  黑色 1寸 等等
+                        $str.=" ".Db::table('ecs_goods_spec_item')->where('id', $opt)->value('item');
                     }
                     $res['goods_name']=$data['goods_name'].$str;
                     // 保存每种规格商品
@@ -199,32 +211,33 @@ class Goods extends Controller
      *
      * @return void
      */
-    public function lookGoods($id){
-        if(!is_numeric($id)){
-          return ;
+    public function lookGoods($id)
+    {
+        if (!is_numeric($id)) {
+            return ;
         }
         //查看当前id下的子商品信息
-        $goods=Db::table('ecs_goods')->where('p_id',$id)->select();
-        $this->assign('data_goods',$goods);
+        $goods=Db::table('ecs_goods')->where('p_id', $id)->select();
+        $this->assign('data_goods', $goods);
         return $this->fetch('look_goods');
-
     }
 
-    private function joinSql($sql,$params){
-      $length=$params['length'];
-      $offset=$params['offset'];
-      $sort=$params['sort'];
-      $order=$params['order'];
+    private function joinSql($sql, $params)
+    {
+        $length=$params['length'];
+        $offset=$params['offset'];
+        $sort=$params['sort'];
+        $order=$params['order'];
         if (!empty($sort)) {
-          $sql=$sql." order by $sort";
-          if (!empty($order)) {
-              $sql=$sql." $order";
-          }
-      }
-      if (!empty($length)) {
-          $sql=$sql." limit $length offset $offset";
-      }
-      return $sql;
+            $sql=$sql." order by $sort";
+            if (!empty($order)) {
+                $sql=$sql." $order";
+            }
+        }
+        if (!empty($length)) {
+            $sql=$sql." limit $length offset $offset";
+        }
+        return $sql;
     }
 
     // ajax获取商品列表
@@ -242,7 +255,7 @@ class Goods extends Controller
         $params['order']=$order;
         // 只显示p_id==0的商品 表示父商品
         $sql="select goods_id,goods_name,goods_price,is_shelves,is_recommend,stock,is_spec from ecs_goods where p_id=0";
-        $sql=$this->joinSql($sql,$params);
+        $sql=$this->joinSql($sql, $params);
             
         $goods=Db::query($sql);
 

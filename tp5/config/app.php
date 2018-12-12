@@ -143,5 +143,9 @@ return [
     // 异常处理handle类 留空使用 \think\exception\Handle
     'exception_handle'       => '',
     
-
+    //上传图片大小限制
+    'image_upload_limit_size'=>1024 * 1024 * 5,
+    
+    // 可删除文件类型
+    'erasable_type' =>['.gif','.jpg','.jpeg','.bmp','.png','.mp4','.3gp','.flv','.avi','.wmv'],
 ];
