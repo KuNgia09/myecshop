@@ -12,13 +12,8 @@
   <link href="__ADMIN__/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="__ADMIN__/plugins/font-awesome/css/font-awesome.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="__ADMIN__/Ionicons/css/ionicons.min.css">
-  <!-- Theme style -->
+
   <link rel="stylesheet" href="__ADMIN__/css/AdminLTE.min.css">
-  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
-        page. However, you can choose any other skin. Make sure you
-        apply the skin class to the body tag so the changes take effect. -->
   <link rel="stylesheet" href="__ADMIN__/css/skins/skin-blue.min.css">
   <link rel="stylesheet" href="__ADMIN__/css/mystyle.css">
   <link href="__ADMIN__/js/plugins/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet" />
@@ -34,7 +29,7 @@
   <![endif]-->
 
   <!-- Google Font -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic"> -->
 
   <style>
     .nav-second-level li a {
@@ -70,7 +65,8 @@
 
         <ul class="nav nav-tabs">
           <li class="active"><a href="#tab_1" data-toggle="tab">通用信息</a></li>
-          <li><a href="#tab_2" data-toggle="tab">详细描述</a></li>
+          <li><a href="#tab_2" data-toggle="tab">商品相册</a></li>
+
           <li><a href="#tab_3" data-toggle="tab">其他信息</a></li>
           <li><a href="#tab_4" data-toggle="tab">商品规格</a></li>
           <li><a href="#tab_5" data-toggle="tab">商品属性</a></li>
@@ -107,14 +103,14 @@
                   </div>
                   <div class="col-sm-2">
                     <select class="form-control" name="two_cat" id="two_cat" onchange="getSubCat(this,'#three_cat',3);">
-                      
+
                     </select>
                   </div>
 
 
                   <div class="col-sm-2">
                     <select class="form-control" name="three_cat" id='three_cat'>
-                     
+
                     </select>
                   </div>
 
@@ -228,26 +224,54 @@
                     <input type="checkbox">自动生成商品缩略图
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <!-- 编辑器 -->
+                  <label class="col-sm-2 control-label">商品描述:</label>
+                  <div style="margin-left:200px;">
+                    <script id="detail_content" name="goods_desc" type="text/plain" style="width:800px;height:600px">
+
+                    </script>
+                  </div>
+
+                </div>
+
+
               </div>
               <!-- /.tab-pane -->
-              <!-- 商品描述 -->
-              <div class="tab-pane" id="tab_2">
-                <div id="tab-2" class="tab-pane" style="margin-top:10px;margin-left: 10px;">
-                  <!-- 编辑器 -->
-                  <script id="detail-content" name="goods_desc" type="text/plain" style="width:800px;height:600px">
 
-                  </script>
-                </div>
+
+              <!-- 商品相册 -->
+              <div class="tab-pane" id="tab_2">
+
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <td>
+
+                        <div class="goods_xc" style="width:100px; text-align:center; margin: 5px; display:inline-block;">
+                          <input type="hidden" name="goods_images[]" value="">
+                          <a href="javascript:void(0);" onclick="GetUploadify(10,'','goods','call_back2');"><img src="__COMMON__/img/add-button.jpg"
+                              width="100" height="100"></a>
+                          <br>
+                          <a href="javascript:void(0)">&nbsp;&nbsp;</a>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
               </div>
               <!-- /.tab-pane -->
               <div class="tab-pane" id="tab_3">
-                
+
 
                 <!-- 库存数量 -->
                 <div class="form-group">
                   <label class="col-sm-2 control-label">商品库存数量:</label>
                   <div class="col-sm-4">
-                    <input type="text" name="stock" class="form-control" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" style="width:50%;">
+                    <input type="text" name="stock" class="form-control" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                      onpaste="this.value=this.value.replace(/[^\d.]/g,'')" style="width:50%;">
                     <span class="help-block m-b-none text-navy">
                       库存在商品为虚货或商品存在货品时为不可编辑状态，库存数值取决于其虚货数量或货品数量
                     </span>
@@ -386,212 +410,240 @@
 
   </section>
 
-  <script src="__ADMIN__/js/jquery-3.1.1.min.js"></script>
-  <script src="__ADMIN__/js/bootstrap.min.js"></script>
 
-  <script src="__ADMIN__/js/adminlte.min.js"></script>
-
-  <script src="__ADMIN__/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
- 
-  <script type="text/javascript" src="__ADMIN__/js/plugins/umeditor/umeditor.config.js"></script>
-
-  <script type="text/javascript" src="__ADMIN__/js/plugins/umeditor/umeditor.min.js"></script>
-  <script src="__ADMIN__/js/jquery.form.js"></script>
-  <script src="__COMMON__/plugins/layer/layer.js"></script>
-  <script type="text/javascript">
-    var um = UM.getEditor('detail-content');
-  </script>
-  <script>
-
-    $('#submit_form').click(function(){
-      // 检查三级分类
-      if(!$('#three_cat').val()){
-        layer.msg('请选择三级分类');
-        return false;
-      }
-      var data=$('#myform').formToArray();
-
-      $.ajax({
-        url: '/index.php/admin/Goods/addOk.html',
-        type: 'POST',
-        data: data,
-        success: function (data) {
-          console.log('添加商品返回数据:');
-          console.log(data);
-          layer.msg(data.msg);
-        }
-      });
-      // 组织表单的默认提交事件
-      return false;
-
-    })
-    function getSubCat(obj, tag,level) {
-      var catId = obj.value;
-      if (catId == 0) {
-        return;
-      }
-
-      var params = {
-        id: catId,
-        level:level
-      };
-      // 获取子分类列表
-      $.ajax({
-        url: '/index.php/admin/Goods/getSubCats',
-        type: 'POST',
-        data: params,
-
-        success: function (data) {
-         
-          console.log('获取子分类tag:' + tag);
-          $(tag).html('');
-          $(tag).append(data);
-        }
-      });
-
-
-
-    }
-    // 根据商品类型获取属性列表
-    function getAttrList(obj) {
-      console.log('根据商品类型获取属性:' + obj.value);
-      // 使用ajax获取选中的商品类型属性
-      var params = {
-        id: obj.value,
-        title: 'jack'
-      };
-      // processData不能为false
-      // 默认情况下，使用GET HTTP方法发送Ajax请求。
-      // 如果需要POST方法，可以通过设置type选项的值来指定方法。此选项会影响选项内容如何data发送到服务器。根据W3C XMLHTTPRequest标准，POST数据将始终使用UTF-8字符集传输到服务器。
-      // 该data选项可以包含表单的查询字符串key1=value1&key2=value2
-      // 或表单的对象{key1: 'value1', key2: 'value2'}。
-      // 如果使用后一种形式，jQuery.param()则在发送之前使用数据将其转换为查询字符串。
-      // 可以通过设置processData来避免此处理false。
-      $.ajax({
-        url: '/index.php/admin/Goods/getGoodsAttr',
-        type: 'POST',
-        data: params,
-        // processData:false,
-        success: function (data) {
-          console.log('goods attr：' + data);
-          $('#attr_wrapper').remove();
-          $(data).insertAfter('#goods_type2');
-        }
-      });
-    }
-
-    // 根据商品类型动态生成规格名 例如颜色 尺寸
-    function getSpecList(obj) {
-      console.log('获取商品类型为:' + obj.value + '的规格');
-
-      var params = {
-        id: obj.value
-      };
-      $.ajax({
-        url: '/index.php/admin/Goods/getGoodsSpec',
-        type: 'POST',
-        data: params,
-
-        success: function (data) {
-
-          console.log('goods spec:' + data);
-          $('#spec_table').remove();
-          $(data).insertAfter('#goods_type1');
-        }
-      });
-
-    }
-
-    // 切换按钮样式
-    function buttonTab(tag) {
-      if ($(tag).hasClass('btn-success')) {
-        $(tag).removeClass('btn-success');
-        $(tag).addClass('btn-default');
-      } else {
-        $(tag).removeClass('btn-default');
-        $(tag).addClass('btn-success');
-        
-      }
-    }
-
-    /**
-     * 合并单元格
-     */
-
-    var mergeCell = function (id) {
-      var tab = document.getElementById(id); //要合并的tableID
-      var maxCol = 2,
-        val, count, start; //maxCol：合并单元格作用到多少列
-      if (tab != null) {
-        for (var col = maxCol - 1; col >= 0; col--) {
-          count = 1;
-          val = "";
-          for (var i = 0; i < tab.rows.length; i++) {
-            if (val == tab.rows[i].cells[col].innerHTML) {
-              count++;
-            } else {
-              if (count > 1) { //合并
-                start = i - count;
-                tab.rows[start].cells[col].rowSpan = count;
-                for (var j = start + 1; j < i; j++) {
-                  tab.rows[j].cells[col].style.display = "none";
-                }
-                count = 1;
-              }
-              val = tab.rows[i].cells[col].innerHTML;
-            }
-          }
-          if (count > 1) { //合并，最后几行相同的情况下
-            start = i - count;
-            tab.rows[start].cells[col].rowSpan = count;
-            for (var j = start + 1; j < i; j++) {
-              tab.rows[j].cells[col].style.display = "none";
-            }
-          }
-        }
-      }
-    }
-
-    // 点击表格的添加规格项按钮 发送ajax请求 动态获取规格项
-    function addSpecItem(obj) {
-      console.log('点击添加规格按钮');
-      buttonTab(obj);
-      // 遍历表格中所有有btn-success样式的按钮
-      var spcArr = {};
-      var tag = '#goods_spec_table button';
-      $(tag).each(function () {
-        if ($(this).hasClass('btn-success')) {
-          var spec_id = $(this).data('spec_id');
-          var item_id = $(this).data('item_id');
-          if (!spcArr.hasOwnProperty(spec_id))
-            spcArr[spec_id] = [];
-          spcArr[spec_id].push(item_id);
-        }
-      });
-
-      var params = {
-        spc: spcArr
-      };
-      console.log(params);
-
-      $.ajax({
-        url: '/index.php/admin/Goods/getAddContentBySpec',
-        type: 'POST',
-        data: params,
-
-        success: function (data) {
-          console.log('根据规格获取表格成功');
-          $("#goods_spec_table2").html('')
-          $("#goods_spec_table2").append(data);
-          mergeCell('spec_input_tab');
-        }
-      });
-
-
-
-    }
-  </script>
 
 </body>
+<script src="__ADMIN__/js/jquery-3.1.1.min.js"></script>
+<script src="__ADMIN__/js/bootstrap.min.js"></script>
+
+<script src="__ADMIN__/js/adminlte.min.js"></script>
+
+<script src="__ADMIN__/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+
+<script type="text/javascript" src="__ADMIN__/js/plugins/umeditor/umeditor.config.js"></script>
+
+<script type="text/javascript" src="__ADMIN__/js/plugins/umeditor/umeditor.min.js"></script>
+<script src="__ADMIN__/js/jquery.form.js"></script>
+<script src="__COMMON__/plugins/layer/layer.js"></script>
+<script type="text/javascript">
+  var um = UM.getEditor('detail_content');
+</script>
+<script>
+  $('#submit_form').click(function () {
+    // 检查三级分类
+    if (!$('#three_cat').val()) {
+      layer.msg('请选择三级分类');
+      return false;
+    }
+    var data = $('#myform').formToArray();
+
+    $.ajax({
+      url: '/index.php/admin/Goods/addOk.html',
+      type: 'POST',
+      data: data,
+      success: function (data) {
+        console.log('添加商品返回数据:');
+        console.log(data);
+        layer.msg(data.msg);
+      }
+    });
+    // 组织表单的默认提交事件
+    return false;
+
+  })
+
+  function getSubCat(obj, tag, level) {
+    var catId = obj.value;
+    if (catId == 0) {
+      return;
+    }
+
+    var params = {
+      id: catId,
+      level: level
+    };
+    // 获取子分类列表
+    $.ajax({
+      url: '/index.php/admin/Goods/getSubCats',
+      type: 'POST',
+      data: params,
+
+      success: function (data) {
+
+        console.log('获取子分类tag:' + tag);
+        $(tag).html('');
+        $(tag).append(data);
+      }
+    });
+
+
+
+  }
+  // 根据商品类型获取属性列表
+  function getAttrList(obj) {
+    console.log('根据商品类型获取属性:' + obj.value);
+    // 使用ajax获取选中的商品类型属性
+    var params = {
+      id: obj.value,
+      title: 'jack'
+    };
+    // processData不能为false
+    // 默认情况下，使用GET HTTP方法发送Ajax请求。
+    // 如果需要POST方法，可以通过设置type选项的值来指定方法。此选项会影响选项内容如何data发送到服务器。根据W3C XMLHTTPRequest标准，POST数据将始终使用UTF-8字符集传输到服务器。
+    // 该data选项可以包含表单的查询字符串key1=value1&key2=value2
+    // 或表单的对象{key1: 'value1', key2: 'value2'}。
+    // 如果使用后一种形式，jQuery.param()则在发送之前使用数据将其转换为查询字符串。
+    // 可以通过设置processData来避免此处理false。
+    $.ajax({
+      url: '/index.php/admin/Goods/getGoodsAttr',
+      type: 'POST',
+      data: params,
+      // processData:false,
+      success: function (data) {
+        console.log('goods attr：' + data);
+        $('#attr_wrapper').remove();
+        $(data).insertAfter('#goods_type2');
+      }
+    });
+  }
+
+  // 根据商品类型动态生成规格名 例如颜色 尺寸
+  function getSpecList(obj) {
+    console.log('获取商品类型为:' + obj.value + '的规格');
+
+    var params = {
+      id: obj.value
+    };
+    $.ajax({
+      url: '/index.php/admin/Goods/getGoodsSpec',
+      type: 'POST',
+      data: params,
+
+      success: function (data) {
+
+        console.log('goods spec:' + data);
+        $('#spec_table').remove();
+        $(data).insertAfter('#goods_type1');
+      }
+    });
+
+  }
+
+  // 切换按钮样式
+  function buttonTab(tag) {
+    if ($(tag).hasClass('btn-success')) {
+      $(tag).removeClass('btn-success');
+      $(tag).addClass('btn-default');
+    } else {
+      $(tag).removeClass('btn-default');
+      $(tag).addClass('btn-success');
+
+    }
+  }
+
+  /**
+   * 合并单元格
+   */
+
+  var mergeCell = function (id) {
+    var tab = document.getElementById(id); //要合并的tableID
+    var maxCol = 2,
+      val, count, start; //maxCol：合并单元格作用到多少列
+    if (tab != null) {
+      for (var col = maxCol - 1; col >= 0; col--) {
+        count = 1;
+        val = "";
+        for (var i = 0; i < tab.rows.length; i++) {
+          if (val == tab.rows[i].cells[col].innerHTML) {
+            count++;
+          } else {
+            if (count > 1) { //合并
+              start = i - count;
+              tab.rows[start].cells[col].rowSpan = count;
+              for (var j = start + 1; j < i; j++) {
+                tab.rows[j].cells[col].style.display = "none";
+              }
+              count = 1;
+            }
+            val = tab.rows[i].cells[col].innerHTML;
+          }
+        }
+        if (count > 1) { //合并，最后几行相同的情况下
+          start = i - count;
+          tab.rows[start].cells[col].rowSpan = count;
+          for (var j = start + 1; j < i; j++) {
+            tab.rows[j].cells[col].style.display = "none";
+          }
+        }
+      }
+    }
+  }
+
+  // 点击表格的添加规格项按钮 发送ajax请求 动态获取规格项
+  function addSpecItem(obj) {
+    console.log('点击添加规格按钮');
+    buttonTab(obj);
+    // 遍历表格中所有有btn-success样式的按钮
+    var spcArr = {};
+    var tag = '#goods_spec_table button';
+    $(tag).each(function () {
+      if ($(this).hasClass('btn-success')) {
+        var spec_id = $(this).data('spec_id');
+        var item_id = $(this).data('item_id');
+        if (!spcArr.hasOwnProperty(spec_id))
+          spcArr[spec_id] = [];
+        spcArr[spec_id].push(item_id);
+      }
+    });
+
+    var params = {
+      spc: spcArr
+    };
+    console.log(params);
+
+    $.ajax({
+      url: '/index.php/admin/Goods/getAddContentBySpec',
+      type: 'POST',
+      data: params,
+
+      success: function (data) {
+        console.log('根据规格获取表格成功');
+        $("#goods_spec_table2").html('')
+        $("#goods_spec_table2").append(data);
+        mergeCell('spec_input_tab');
+      }
+    });
+
+
+
+  }
+</script>
+<script>
+  /*
+   * 上传图片 后台专用
+   * @access  public
+   * @null int 一次上传图片张图
+   * @elementid string 上传成功后返回路径插入指定ID元素内
+   * @path  string 指定上传保存文件夹,默认存在public/upload/temp/目录
+   * @callback string  回调函数(单张图片返回保存路径字符串，多张则为路径数组 )
+   */
+  function GetUploadify(num, elementid, path, callback, fileType) {
+    var upurl = '/index.php?m=Admin&c=Uploadify&a=upload&num=' + num + '&input=' + elementid + '&path=' + path +
+      '&func=' + callback + '&fileType=' + fileType;
+    var title = '上传图片';
+    if (fileType == 'Flash') {
+      title = '上传视频';
+    }
+    layer.open({
+      type: 2,
+      title: title,
+      shadeClose: true,
+      shade: false,
+      maxmin: true, //开启最大化最小化按钮
+      area: ['50%', '60%'],
+      content: upurl
+    });
+  }
+</script>
 
 </html>

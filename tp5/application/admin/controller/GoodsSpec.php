@@ -46,7 +46,7 @@ class GoodsSpec extends Controller
             }
             dump($spec_items);
         }
-        dump($spec_info);
+       
         ob_clean();
 
         $count=Db::table('ecs_goods_spec')->count();

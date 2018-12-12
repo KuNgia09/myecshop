@@ -31,7 +31,7 @@ class GoodsType extends Controller
             $count=Db::name('ecs_attribute')->where('type_id', $type['type_id'])->count();
             $goods_type[$key]['attr_count']=$count;
         }
-        // dump($goods_type);
+        
         // 获取商品类型的数目
         $count=Db::table('ecs_goods_type')->count();
        
