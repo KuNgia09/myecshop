@@ -14,12 +14,13 @@ use think\Session;
 use Kint\Kint;
 use app\common\tool\DbUtil;
 use app\common\tool\ArrayChildren;
+use think\Validate;
+use app\admin\validate\Goods as GoodsValidate;
+use app\admin\logic\GoodsLogic;
 
-// 引入工具类
 
 
-
-class Goods extends Controller
+class Goods extends Base
 {
     // 显示商品列表页面
     public function showList()
@@ -73,8 +74,36 @@ class Goods extends Controller
         $data=input('post.');
         // 商品规格
         $spec_item = input('item/a');
-        $goods = new \app\common\model\Goods();
-        
+        $validate = new GoodsValidate();// 数据验证
+        // 批量验证
+        if (!$validate->batch()->check($data)) {
+          $error = $validate->getError();
+          $error_msg = array_values($error);
+          $return_arr = ['status' => 0, 'msg' => $error_msg[0], 'result' => $error];
+          $this->ajaxReturn($return_arr);
+      }
+
+      
+
+      // 启动事务
+      Db::startTrans();
+      try{
+          $goods = new \app\common\model\Goods();
+          // 第二个字段要设置为true 触发模型的修改器
+          $goods->data($data,true);
+          $goods->last_update = time();
+          $goods->save();
+          $goods_id=$goods->goods_id;
+          $GoodsLogic = new GoodsLogic();
+          $GoodsLogic->afterSave($goods_id);
+
+          // 提交事务
+          Db::commit();
+      } catch (\Exception $e) {
+          // 回滚事务
+          Db::rollback();
+      }
+
     }
 
     // 获取添加新商品的信息
