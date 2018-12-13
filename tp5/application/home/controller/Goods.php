@@ -11,7 +11,7 @@ class Goods extends Controller
     public function showList()
     {
         // 显示商品列表
-        $data=Db::table('ecs_goods')->select();
+        $data=Db::name('goods')->select();
         $this->assign('data', $data);
         return $this->fetch('show_list');
     }
@@ -24,54 +24,49 @@ class Goods extends Controller
             return;
         }
 
-        $goods=Db::table('ecs_goods')->where('goods_id', $id)->find();
+        $goods=Db::name('goods')->where('goods_id', $id)->find();
         
         $goods_name=$goods['goods_name'];
        
 
         // 查询商品的属性
         $goods_attrs=[];
-        $goods_attrs=Db::table('ecs_goods_attr')->field('attr_id,attr_value')->where('goods_id', $id)->select();
+        $goods_attrs=Db::name('goods_attr')->field('attr_id,attr_value')->where('goods_id', $id)->select();
         foreach ($goods_attrs as $key=>$attr) {
             $attr_id=$attr['attr_id'];
-            $attribute=Db::table('ecs_attribute')->where('attr_id', $attr_id)->find();
+            $attribute=Db::name('attribute')->where('attr_id', $attr_id)->find();
             // 获取属性名
             $attr_name=$attribute['attr_name'];
             $goods_attrs[$key]['attr_name']=$attr_name;
         }
 
-        //查询多规格商品
-        // 首先获取父级商品的信息
-        $p_id=$goods['p_id'];
+     
         $goods_spec=[];
         $current_spec_key=[];
         // $p_id为0表示这是父级商品
-        if ($p_id!=0) {
-            // 查询多规格子商品信息
-            $spec_goods=Db::table('ecs_goods')->field('goods_id,goods_name,brand_id,p_id,goods_desc,goods_price')->where('p_id', $p_id)->select();
-            // 将多规格商品的id连接起来
-            $str='';
-            foreach ($spec_goods as $key=>$value) {
-                $str.=$value['goods_id'];
-                if ($key<count($spec_goods)-1) {
-                    $str.=',';
-                }
-            }
+   
+        // 查询多规格商品的key 价格 库存等信息
+        $sql="SELECT * FROM ecs_spec_goods_price WHERE (goods_id=$id)";
+        $spec_goods_price=Db::query($sql);
 
-            // 查询多规格商品的key 价格 库存等信息
-            $sql="SELECT * FROM ecs_spec_goods_price WHERE (goods_id in ($str))";
-            $spec_goods_price=Db::query($sql);
-          
+        // 规格名和规格项数据
+        $goods_spec=[];
+        // 当前激活的规格项key
+        $current_spec_key=[];
+
+        if (!empty($spec_goods_price)) {
             $res=[];
-            $current_spec_key=[];
+            
             // 获取这种形式的key 20_24_26
             // 将key的每个unit单元提取出来
             foreach ($spec_goods_price as $key=>$value) {
                 $spec_key=$value['key'];
                 // 获取当前商品的key值
-                if ($value['goods_id']==$id) {
+                // 提取第一项作为激活的规格项组合
+                if (empty($current_spec_key)) {
                     $current_spec_key=explode('_', $spec_key);
                 }
+                
                 $res[]=str_replace('_', ",", $spec_key);
             }
             // 将所有的规格项id组合起来
@@ -109,28 +104,29 @@ class Goods extends Controller
                 }
             }
             //array(6)
-          // id:1
-          // type_id:4
-          // name:"颜色"
-          // sort:20
-          // is_show:1
-          // children:array(2)
-              // 0:array(3)
-              // id:1
-              // spec_id:1
-              // item:"白色"
-              // 1:array(3)
-              // id:2
-              // spec_id:1
-              // item:"黑色"
-        }
+            // id:1
+            // type_id:4
+            // name:"颜色"
+            // sort:20
+            // is_show:1
+            // children:array(2)
+            // 0:array(3)
+            // id:1
+            // spec_id:1
+            // item:"白色"
+            // 1:array(3)
+            // id:2
+            // spec_id:1
+            // item:"黑色"
+        
       
-        // 商品通用信息
-        $this->assign('data', $goods);
-        // 商品规格信息
-        $this->assign('specData', $goods_spec);
-        $this->assign('spec_key', $current_spec_key);
-        $this->assign('attrs', $goods_attrs);
-        return $this->fetch('detail');
+            // 商品通用信息
+            $this->assign('data', $goods);
+            // 商品规格信息
+            $this->assign('specData', $goods_spec);
+            $this->assign('spec_key', $current_spec_key);
+            $this->assign('attrs', $goods_attrs);
+            return $this->fetch('detail');
+        }
     }
 }

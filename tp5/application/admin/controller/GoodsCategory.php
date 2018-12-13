@@ -41,7 +41,7 @@ class GoodsCategory extends Controller
     public function addCategory()
     {
         //获取商品分类
-        $cats=Db::table('ecs_category')->field('cat_id,parent_id,cat_name')->select();
+        $cats=Db::name('category')->field('cat_id,parent_id,cat_name')->select();
         // 默认递归深度是2层
         $list_cats=DbUtil::child($cats, 0);
         
@@ -61,7 +61,7 @@ class GoodsCategory extends Controller
         // 关于cat_name为'' 可以插入的情况 参考如下的文章
         // mysql中查询字段为null或者不为null:https://blog.csdn.net/u010442302/article/details/52335401
         // 一千个不用 Null 的理由 https://my.oschina.net/leejun2005/blog/1342985
-        Db::table('ecs_category')->insert($data);
+        Db::name('category')->insert($data);
         // 重定向到商品分类列表
         $this->success('添加分类成功', 'goodsCategory/showCategory');
         die;

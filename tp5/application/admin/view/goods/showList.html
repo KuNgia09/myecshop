@@ -129,13 +129,13 @@
         var click='getGoodsDetail('+goods_id+')';
         
         // 判断是否为规格商品
-        if(row.is_spec==0){
-          return '<a target="_blank" href="/index.php/home/goods/goodsDetail/id/'+goods_id+'" style="margin-left:5px;"><button  class="btn btn-info btn-sm rightSize detailBtn"><i class="fa fa-paste"></i>&nbsp;查看</button></a>';
-        }
-        else{
-          return '<button  class="btn btn-info btn-sm rightSize detailBtn" onclick="'+click+'"  type="button" style="margin-left:5px;"><i class="fa fa-paste"></i>&nbsp;查看</button>';
-        }
-        
+        // if(row.is_spec==0){
+        //   return '<a target="_blank" href="/index.php/home/goods/goodsDetail/id/'+goods_id+'" style="margin-left:5px;"><button  class="btn btn-info btn-sm rightSize detailBtn"><i class="fa fa-paste"></i>&nbsp;查看</button></a>';
+        // }
+        // else{
+        //   return '<button  class="btn btn-info btn-sm rightSize detailBtn" onclick="'+click+'"  type="button" style="margin-left:5px;"><i class="fa fa-paste"></i>&nbsp;查看</button>';
+        // }
+        return '<a target="_blank" href="/index.php/home/goods/goodsDetail/id/'+goods_id+'" style="margin-left:5px;"><button  class="btn btn-info btn-sm rightSize detailBtn"><i class="fa fa-paste"></i>&nbsp;查看</button></a>';
     };
 
     var formateGoodsStatus = function (value, row, index) {
@@ -193,11 +193,11 @@
       field: "goods_name",
       title: "商品名称",
       align: "center",
-      sortable: false //本列不可以排序
+      sortable: false
     },
   
     {
-      field: "goods_price",
+      field: "shop_price",
       title: "价格",
       align: "center"
     },
@@ -212,7 +212,7 @@
       field: "is_recommend",
       title: "是否推荐",
       align: "center",
-      halign: "center", //设置表头列居中对齐
+      halign: "center", 
 
       formatter: formateGoodsStatus
     },
@@ -309,7 +309,7 @@
       }
       var d=parent;
       // 在父窗口显示iframe层 父窗口需要加载layer
-     parent.layer.open({
+      parent.layer.open({
           type: 2,
           title: '商品详情',
           shadeClose: true,

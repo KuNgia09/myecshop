@@ -147,12 +147,12 @@
                 <!-- 市场价 -->
                 <div class="form-group">
                   <label class="col-sm-2 control-label">市场价:</label>
-                  <div class="col-sm-1"><input name="market_price" type="text" class="form-control" value="0" ></div>
+                  <div class="col-sm-1"><input name="market_price" type="text" class="form-control" value="0"></div>
                 </div>
                 <!-- 本店售价 -->
                 <div class="form-group">
                   <label class="col-sm-2 control-label">本店售价:</label>
-                  <div class="col-sm-1"><input name="shop_price" type="text" class="form-control" value="0" ></div>
+                  <div class="col-sm-1"><input name="shop_price" type="text" class="form-control" value="0"></div>
                 </div>
 
                 <!-- <div class="form-group"></div>
@@ -435,24 +435,45 @@
 </script>
 <script>
   $('#submit_form').click(function () {
+   
     // 检查三级分类
     if (!$('#cat_id_3').val()) {
       layer.msg('请选择三级分类');
       return false;
     }
+
+    // 防止重复添加商品
+    $(this).attr('disabled', true);
+    
     // var data = $('#myform').formToArray();
 
     $.ajax({
       url: "{:url('goods/save')}",
       type: 'POST',
+      // $('#myform').formToArray()等价于$('#myform').serialize()
       data: $('#myform').serialize(),
+      error: function () {
+        layer.alert("服务器繁忙, 请联系管理员!");
+      },
       success: function (data) {
-        console.log('添加商品返回数据:');
-        console.log(data);
-        layer.msg(data.msg);
+        if (data.status == 1) {
+          layer.msg(data.msg, { icon: 1, time: 2000 }, function () {
+
+            location.href = "{:url('Goods/showList')}";
+
+          });
+        } else {
+          $(this).attr('disabled', false);
+          // 显示出错的信息
+          // $.each(data.result, function (index, item) {
+          //     $('span.err').show();
+          //     $('#err_'+index).text(item);
+          // });
+          layer.msg(data.msg, { icon: 2, time: 3000 });
+        }
       }
     });
-    // 组织表单的默认提交事件
+    // 阻止表单的默认提交事件
     return false;
 
   })
@@ -651,42 +672,42 @@
   }
 
 
-   // 上传商品图片成功回调函数
-   function call_back(fileurl_tmp){
-        $("#original_img").val(fileurl_tmp);
-    	  $("#original_img2").attr('href', fileurl_tmp);
+  // 上传商品图片成功回调函数
+  function call_back(fileurl_tmp) {
+    $("#original_img").val(fileurl_tmp);
+    $("#original_img2").attr('href', fileurl_tmp);
+  }
+
+  // 上传商品相册回调函数
+  function call_back2(paths) {
+    var last_div = $(".goods_xc:last").prop("outerHTML");
+    for (var i = 0; i < paths.length; i++) {
+      $(".goods_xc:eq(0)").before(last_div);	// 插入一个 新图片
+      $(".goods_xc:eq(0)").find('a:eq(0)').attr('href', paths[i]).attr('onclick', '').attr('target', "_blank");// 修改他的链接地址
+      $(".goods_xc:eq(0)").find('img').attr('src', paths[i]);// 修改他的图片路径
+      $(".goods_xc:eq(0)").find('a:eq(1)').attr('onclick', "ClearPicArr2(this,'" + paths[i] + "')").text('删除');
+      $(".goods_xc:eq(0)").find('input').val(paths[i]); // 设置隐藏域 要提交的值
     }
- 
-    // 上传商品相册回调函数
-    function call_back2(paths) {
-        var last_div = $(".goods_xc:last").prop("outerHTML");
-        for (var i = 0; i < paths.length; i++) {
-            $(".goods_xc:eq(0)").before(last_div);	// 插入一个 新图片
-            $(".goods_xc:eq(0)").find('a:eq(0)').attr('href', paths[i]).attr('onclick', '').attr('target', "_blank");// 修改他的链接地址
-            $(".goods_xc:eq(0)").find('img').attr('src', paths[i]);// 修改他的图片路径
-            $(".goods_xc:eq(0)").find('a:eq(1)').attr('onclick', "ClearPicArr2(this,'" + paths[i] + "')").text('删除');
-            $(".goods_xc:eq(0)").find('input').val(paths[i]); // 设置隐藏域 要提交的值
-        }
-    }
-    //上传之后删除组图
-    function ClearPicArr2(obj, path) {
-        $.ajax({
-            type: 'GET',
-            url: "{:url('admin/Uploadify/delUpload')}",
-            data: {action: "del", filename: path},
-            success: function () {
-                $(obj).parent().remove(); // 删除完服务器的, 再删除 html上的图片
-            }
-        });
-        // // 删除数据库记录
-        // $.ajax({
-        //     type: 'GET',
-        //     url: "{:url('Admin/Goods/del_goods_images')}",
-        //     data: {filename: path},
-        //     success: function () {
-        //     }
-        // });
-    }
+  }
+  //上传之后删除组图
+  function ClearPicArr2(obj, path) {
+    $.ajax({
+      type: 'GET',
+      url: "{:url('admin/Uploadify/delUpload')}",
+      data: { action: "del", filename: path },
+      success: function () {
+        $(obj).parent().remove(); // 删除完服务器的, 再删除 html上的图片
+      }
+    });
+    // // 删除数据库记录
+    // $.ajax({
+    //     type: 'GET',
+    //     url: "{:url('Admin/Goods/del_goods_images')}",
+    //     data: {filename: path},
+    //     success: function () {
+    //     }
+    // });
+  }
 
 </script>
 

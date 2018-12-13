@@ -33,7 +33,7 @@ class GoodsType extends Controller
         }
         
         // 获取商品类型的数目
-        $count=Db::table('ecs_goods_type')->count();
+        $count=Db::name('goods_type')->count();
        
         
         $list=array('count'=>$count,'data'=>$goods_type);

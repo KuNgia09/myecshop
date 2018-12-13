@@ -18,22 +18,19 @@ use think\Validate;
 use app\admin\validate\Goods as GoodsValidate;
 use app\admin\logic\GoodsLogic;
 
-
-
 class Goods extends Base
 {
     // 显示商品列表页面
     public function showList()
     {
         //获取商品分类
-        //只显示父商品 p_id==0
-        $cats=Db::table('ecs_category')->field('cat_id,parent_id,cat_name')->select();
+        $cats=Db::name('category')->field('cat_id,parent_id,cat_name')->select();
         
         $list_cats=DbUtil::child($cats, 0);
         // Kint::dump($list_cats);
 
         // 获取品牌列表
-        $brands=Db::table('ecs_brand')->field('brand_id,brand_name')->select();
+        $brands=Db::name('brand')->field('brand_id,brand_name')->select();
         // Kint::dump($brands);
         
         $this->assign('list_cats', $list_cats);
@@ -46,15 +43,15 @@ class Goods extends Base
     public function add()
     {
         // 先获取一级分类
-        $list_one_cats=Db::table('ecs_category')->field('cat_id,cat_name,parent_id')->where('parent_id', 0)->select();
+        $list_one_cats=Db::name('category')->field('cat_id,cat_name,parent_id')->where('parent_id', 0)->select();
 
         //获取商品的品牌
-        $goods_brand=Db::table('ecs_brand')->field('brand_id,brand_name')->select();
+        $goods_brand=Db::name('brand')->field('brand_id,brand_name')->select();
 
         // 获取供应商信息
-        $suppliers=Db::table('ecs_suppliers')->field('suppliers_id,suppliers_name')->select();
+        $suppliers=Db::name('suppliers')->field('suppliers_id,suppliers_name')->select();
         // 获取商品类型
-        $goods_type=Db::table('ecs_goods_type')->field('type_id,type_name')->select();
+        $goods_type=Db::name('goods_type')->field('type_id,type_name')->select();
 
         $this->assign('list_one_cats', $list_one_cats);
         $this->assign('list_brand', $goods_brand);
@@ -77,163 +74,39 @@ class Goods extends Base
         $validate = new GoodsValidate();// 数据验证
         // 批量验证
         if (!$validate->batch()->check($data)) {
-          $error = $validate->getError();
-          $error_msg = array_values($error);
-          $return_arr = ['status' => 0, 'msg' => $error_msg[0], 'result' => $error];
-          $this->ajaxReturn($return_arr);
-      }
+            $error = $validate->getError();
+            $error_msg = array_values($error);
+            $return_arr = ['status' => 0, 'msg' => $error_msg[0], 'result' => $error];
+            $this->ajaxReturn($return_arr);
+        }
 
       
 
-      // 启动事务
-      Db::startTrans();
-      try{
-          $goods = new \app\common\model\Goods();
-          // 第二个字段要设置为true 触发模型的修改器
-          $goods->data($data,true);
-          $goods->last_update = time();
-          $goods->save();
-          $goods_id=$goods->goods_id;
-          $GoodsLogic = new GoodsLogic();
-          $GoodsLogic->afterSave($goods_id);
-
-          // 提交事务
-          Db::commit();
-      } catch (\Exception $e) {
-          // 回滚事务
-          Db::rollback();
-      }
-
-    }
-
-    // 获取添加新商品的信息
-    public function addOK()
-    {
-        $data=[];
-        $data['goods_name']=$_POST['goods_name'];
-        
-        // 商品三级分类
-        $data['cat_id']=$_POST['three_cat'];
-        $data['brand_id']=$_POST['brand_id'];
-        $data['suppliers_id']=$_POST['suppliers_id'];
-        
-        $data['goods_price']=$_POST['shop_price'];
-        // 促销价
-        $data['promote_price']=$_POST['promote_price'];
-        // 促销日期
-        $data['promote_start_date']=$_POST['promote_start_date'];
-        $data['promote_end_date']=$_POST['promote_end_date'];
-
-        // 富文本编辑器 商品描述
-        $data['goods_desc']=htmlentities($_POST['goods_desc']);
-           
-        // 库存
-        $data['stock']=$_POST['stock'];
-        $data['warn_number']=$_POST['warn_number'];
-
-        // 商品关键词
-        $data['keywords']=$_POST['keywords'];
-        // 商品简洁
-        $data['goods_brief']=$_POST['goods_brief'];
-        // 商品备注
-        $data['seller_note']=$_POST['seller_note'];
-        // 父级商品SPU
-        $data['p_id']=0;
-        // 是否为多规格商品
-        $data['is_spec']=empty($_POST['item'])?0:1;
- 
-        // 启动事务 需要注意的是MyISAM存储引擎不支持事务处理
+        // 启动事务
         Db::startTrans();
         try {
-            // 插入商品的基本信息
-            Db::table('ecs_goods')->insert($data);
-            $goods_id = Db::table('ecs_goods')->getLastInsID();
-            // 商品属性存在的话 代表选择了属性
-            if (isset($_POST['attr_id_list'])) {
-                // 遍历所有的属性id
-                $attr_id_list=$_POST['attr_id_list'];
-                $attr_value_list=$_POST['attr_value_list'];
-                $attr_value_list_trim=[];
-                foreach ($attr_value_list as $key=>$attr_value) {
-                    // 如果属性值为空或者为0 移除当前属性
-                    if (empty($attr_value)) {
-                        // 使用unset不会改变索引
-                        unset($attr_id_list[$key]);
-                    }
-                }
-                $data_attr=[];
-          
-                foreach ($attr_id_list as $key=>$attr_id) {
-                    $res=['goods_id'=>$goods_id,'attr_id'=>$attr_id,'attr_value'=>$attr_value_list[$key]];
-                    $data_attr[]=$res;
-                }
-         
-                //  插入多维数组 将商品属性值保存到商品属性表中
-                Db::table('ecs_goods_attr')->insertAll($data_attr);
-            }
-            // 遍历商品规格
-            if (!empty($_POST['item'])) {
-                // 每种规格的商品信息
-                // 3_8:array(4)
-                // price:"100"
-                // preferential:"99"
-                // storeCount:"999"
-                // sku:"FK001"
-                // 2_8:array(4)
-                // price:"100"
-                // preferential:"99"
-                // storeCount:"999"
-                // sku:"FK002"
-                $specs=$_POST['item'];
+            $goods = new \app\common\model\Goods();
+            // 第二个字段要设置为true 触发模型的修改器
+            $goods->data($data, true);
+            $goods->last_update = time();
+            $goods->save();
+            $goods_id=$goods->goods_id;
+            $GoodsLogic = new GoodsLogic();
+            $GoodsLogic->afterSave($goods_id);
 
-                
-                //用来保存所有的子商品信息
-                $sub_goods_data=[];
-                $res=$data;
-                $spec_id=[];
-                foreach ($specs as $key=>$value) {
-                    $res['goods_price']=$value['price'];
-                    $res['member_price']=$value['preferential'];
-                    $res['stock']=$value['storeCount'];
-                    $res['p_id']=$goods_id;
-                    // 修改多规格商品的标题
-                    // 分析key值 获取每种规格项的名称
-                    $opts=explode('_', $key);
-                    $str='';
-                    foreach ($opts as $opt) {
-                        // 获取每种规格项的名称 例如 白色  黑色 1寸 等等
-                        $str.=" ".Db::table('ecs_goods_spec_item')->where('id', $opt)->value('item');
-                    }
-                    $res['goods_name']=$data['goods_name'].$str;
-                    // 保存每种规格商品
-                    $spec_goods_id=Db::table('ecs_goods')->insertGetId($res);
-                    $specs[$key]['goods_id']= $spec_goods_id;
-                }
-                $res=[];
-                $spec_key_data=[];
-                // 保存规格名的key值
-                foreach ($specs as $key=>$value) {
-                    $res['goods_id']=$value['goods_id'];
-                    // 多规格组成的key
-                    $res['key']=$key;
-                    $res['price']=$value['price'];
-                    $res['store_count']=$value['storeCount'];
-                    // 会员价
-                    $res['preferential']=$value['preferential'];
-                    $res['sku']=$value['sku'];
-                    $spec_key_data[]=$res;
-                }
-                Db::table('ecs_spec_goods_price')->insertAll($spec_key_data);
-            }
             // 提交事务
             Db::commit();
-            return WSTReturn('添加商品成功', 1);
+            $return_arr = ['status' => 1, 'msg' =>'操作成功'];
+            $this->ajaxReturn($return_arr);
         } catch (\Exception $e) {
             // 回滚事务
             Db::rollback();
-            return WSTReturn('添加商品失败', -1);
+            $return_arr = ['status' => 0, 'msg' =>'操作失败'];
+            $this->ajaxReturn($return_arr);
         }
     }
+
+    
     
     /**
      * 弹出iframe框 获取子商品
@@ -246,28 +119,12 @@ class Goods extends Base
             return ;
         }
         //查看当前id下的子商品信息
-        $goods=Db::table('ecs_goods')->where('p_id', $id)->select();
+        $goods=Db::name('goods')->where('p_id', $id)->select();
         $this->assign('data_goods', $goods);
         return $this->fetch('look_goods');
     }
 
-    private function joinSql($sql, $params)
-    {
-        $length=$params['length'];
-        $offset=$params['offset'];
-        $sort=$params['sort'];
-        $order=$params['order'];
-        if (!empty($sort)) {
-            $sql=$sql." order by $sort";
-            if (!empty($order)) {
-                $sql=$sql." $order";
-            }
-        }
-        if (!empty($length)) {
-            $sql=$sql." limit $length offset $offset";
-        }
-        return $sql;
-    }
+    
 
     // ajax获取商品列表
     public function getGoodsList()
@@ -282,16 +139,16 @@ class Goods extends Base
         $params['offset']=$offset;
         $params['sort']=$sort;
         $params['order']=$order;
-        // 只显示p_id==0的商品 表示父商品
-        $sql="select goods_id,goods_name,goods_price,is_shelves,is_recommend,stock,is_spec from ecs_goods where p_id=0";
+        
+        $sql="select goods_id,goods_name,shop_price,is_shelves,is_recommend,stock from ecs_goods ";
         $sql=$this->joinSql($sql, $params);
             
         $goods=Db::query($sql);
 
-        $count=Db::table('ecs_goods')->count();
-        // Kint::dump('商品数量:'.$goods);
+        $count=Db::name('goods')->count();
+       
         $list=array('count'=>$count,'data'=>$goods);
-        return $list;
+        return $this->ajaxReturn($list);
     }
 
     //搜索过滤获取商品列表
@@ -313,7 +170,7 @@ class Goods extends Base
             return 0;
         }
         // 根据商品类型获取属性表
-        $attribute=Db::table('ecs_attribute')->where('type_id', $id)->select();
+        $attribute=Db::name('attribute')->where('type_id', $id)->select();
         $str='<div id="attr_wrapper">';
 
         
@@ -362,7 +219,7 @@ class Goods extends Base
         $type_id=isset($_POST['id'])?$_POST['id']:4;
 
         // 当前商品类型下的规格 例如 颜色 尺寸等
-        $specs=Db::table('ecs_goods_spec')->where('type_id', $type_id)->select();
+        $specs=Db::name('goods_spec')->where('type_id', $type_id)->select();
         dump($specs);
         if (empty($specs)) {
             return 0;
@@ -375,7 +232,7 @@ class Goods extends Base
             $spec_id=$spec['id'];
         
             // 根据规格id获取规格项的内容
-            $spec_items=Db::table('ecs_goods_spec_item')->where('spec_id', $spec_id)->select();
+            $spec_items=Db::name('goods_spec_item')->where('spec_id', $spec_id)->select();
 
             // 如果当前规格没有内容 直接跳过
             if (!empty($spec_items)) {
@@ -405,13 +262,45 @@ class Goods extends Base
     // 根据选中的规格项获取笛卡儿积的表格
     public function getAddContentBySpec()
     {
-        // $array_children=new \app\admin\common\tool\ArrayChildren($_POST);
+        // 选中颜色:白色 黑色
+        // 尺寸:5寸 6寸
+        // 会生成如下的结构
+        // spc:array(2)
+        // 3:array(2)
+        // 0:"20"
+        // 1:"21"
+        // 4:array(2)
+        // 0:"23"
+        // 1:"24"
         $array_children=new ArrayChildren($_POST);
         // 获取笛卡尔积
+
+        // 生成的笛卡儿积
+        // artesianProduct:array(4)
+        // 0:array(2)
+        // 0:"21"
+        // 1:"24"
+        // 1:array(2)
+        // 0:"21"
+        // 1:"23"
+        // 2:array(2)
+        // 0:"20"
+        // 1:"24"
+        // 3:array(2)
+        // 0:"20"
+        // 1:"23"
         $data=$array_children->parseSpecific($_POST['spc']);
         // 查询某一列的值用column
-        $spec=Db::table('ecs_goods_spec')->column('id,name');
-        $spec_item=Db::table('ecs_goods_spec_item')->column('id,spec_id,item');
+        // 查询规格名
+        // array(5)
+        // 2:"ddd"
+        // 3:"颜色"
+        // 4:"尺寸"
+        // 5:"单位"
+        // 6:"等分"
+        $spec=Db::name('goods_spec')->column('id,name');
+
+        $spec_item=Db::name('goods_spec_item')->column('id,spec_id,item');
 
         $cloName = $data['arrayKeys'];
         $str = "<table class='table table-bordered' id='spec_input_tab'>";
@@ -432,8 +321,17 @@ class Goods extends Base
             $itemKeyName = array();
             $flag = 0;
             foreach ($value as $k2 => $v2) {
+                // 具体规格项值 如白色
                 $str .="<td>{$spec_item[$v2]['item']}</td>";
+                // $spec[$spec_item[$v2]['spec_id']]:规格项名
+                // $spec_item[$v2]['item']:规格项值
+                // $itemKeyName[$v2]=规格名:规格项值 例如如下:颜色:白色
                 $itemKeyName[$v2] = $spec[$spec_item[$v2]['spec_id']].':'.$spec_item[$v2]['item'];
+            }
+            // 获取key_name
+            $key_name='';
+            foreach ($itemKeyName as $value) {
+                $key_name.=$value.'  ';
             }
             // 根据键名排序
             ksort($itemKeyName);
@@ -443,9 +341,12 @@ class Goods extends Base
               
             $str .="<td><input type='text' name='item[$itemKey][".'preferential'."]'  onkeyup='this.value=this.value.replace(/[^\d.]/g,\"\")' onpaste='this.value=this.value.replace(/[^\d.]/g,\"\")' /></td>";
                     
-            $str .="<td><input type='text' name='item[$itemKey][".'storeCount'."]'  onkeyup='this.value=this.value.replace(/[^\d.]/g,\"\")' onpaste='this.value=this.value.replace(/[^\d.]/g,\"\")' /></td>";
+            $str .="<td><input type='text' name='item[$itemKey][".'store_count'."]'  onkeyup='this.value=this.value.replace(/[^\d.]/g,\"\")' onpaste='this.value=this.value.replace(/[^\d.]/g,\"\")' /></td>";
                    
-            $str .="<td><input type='text' name='item[$itemKey][".'sku'."]' /></td>";
+            $str .="<td><input type='text' name='item[$itemKey][".'sku'."]' />
+                        <input type='hidden' name='item[$itemKey][".'key_name'."]' value='$key_name' />
+                    </td>";
+           
             $str .='</tr>';
         }
        
@@ -463,7 +364,7 @@ class Goods extends Base
         // 获取当前分类id
         $cat_id=$_POST['id'];
         $level=$_POST['level'];
-        $sub_cats=Db::table('ecs_category')->field('cat_id,cat_name,parent_id')->where('parent_id', $cat_id)->select();
+        $sub_cats=Db::name('category')->field('cat_id,cat_name,parent_id')->where('parent_id', $cat_id)->select();
         
         if ($level==2) {
             $html='<option value="0">请选择二级分类</option>';

@@ -39,10 +39,10 @@ class GoodsAttr extends Controller
         // typeId为0表示是所有的商品类型
         if ($typeId==0) {
             $attr_list=queryList('ecs_attribute');
-            $count=Db::table('ecs_attribute')->count();
+            $count=Db::name('attribute')->count();
         } else {
             $attr_list=queryListCondition('ecs_attribute', $field, $typeId);
-            $count=Db::table('ecs_attribute')->where($field, $typeId)->count();
+            $count=Db::name('attribute')->where($field, $typeId)->count();
         }
 
         // 查询商品类型名称
@@ -50,7 +50,7 @@ class GoodsAttr extends Controller
             // 获取每种属性的类型id
             $cat_id_item=$value[$field];
             // find只获取一行数据
-            $type_name=Db::table('ecs_goods_type')->field('type_name')->where('type_id', $cat_id_item)->find();
+            $type_name=Db::name('goods_type')->field('type_name')->where('type_id', $cat_id_item)->find();
             $attr_list[$key]['type_name']=$type_name['type_name'];
         }
      

@@ -56,6 +56,4 @@ class Goods extends Validate
         'is_free_shipping.require' => '请选择商品是否包邮',
         'virtual_limit.checkVirtualLimit' => '虚拟商品购买上限1~10之间的数字',
     ];
-
-
 }

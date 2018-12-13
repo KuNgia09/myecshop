@@ -41,11 +41,11 @@ class Ueditor extends Controller
      * @return void
      */
     public function imageUp()
-    {       
+    {
         // 上传图片框中的描述表单名称，
         $pictitle = input('pictitle');
         $dir = input('dir');
-        $title = htmlspecialchars($pictitle , ENT_QUOTES);        
+        $title = htmlspecialchars($pictitle, ENT_QUOTES);
         $path = htmlspecialchars($dir, ENT_QUOTES);
         //$input_file ['upfile'] = $info['Filedata'];  一个是上传插件里面来的, 另外一个是 文章编辑器里面来的
         // 获取表单上传文件

@@ -31,7 +31,7 @@ class GoodsSpec extends Controller
         $spec_info=Db::query($sql);
         dump($spec_info);
         foreach ($spec_info as $key=>$value) {
-            $spec_items=Db::table('ecs_goods_spec_item')->where('spec_id', $value['spec_id'])->select();
+            $spec_items=Db::name('goods_spec_item')->where('spec_id', $value['spec_id'])->select();
             if (!empty($spec_items)) {
                 $str='';
                 foreach ($spec_items as $i=>$value_item) {
@@ -49,7 +49,7 @@ class GoodsSpec extends Controller
        
         ob_clean();
 
-        $count=Db::table('ecs_goods_spec')->count();
+        $count=Db::name('goods_spec')->count();
         $list=array('count'=>$count,'data'=>$spec_info);
         return $list;
     }
@@ -57,7 +57,7 @@ class GoodsSpec extends Controller
     // 添加商品规格表单
     public function add()
     {
-        $type=Db::table('ecs_goods_type')->field('type_id,type_name')->select();
+        $type=Db::name('goods_type')->field('type_id,type_name')->select();
         $this->assign('type', $type);
         return $this->fetch();
     }
@@ -71,8 +71,8 @@ class GoodsSpec extends Controller
         $data['sort']=$_POST['type_id'];
         $data['is_show']=$_POST['is_show'];
       
-        Db::table('ecs_goods_spec')->insert($data);
-        $insert_id=Db::table('ecs_goods_spec')->getLastInsID();
+        Db::name('goods_spec')->insert($data);
+        $insert_id=Db::name('goods_spec')->getLastInsID();
         // 规格内容每项是一行一行地写入
         $items=$_POST['items'];
         $opts=explode(PHP_EOL, $items);
@@ -81,7 +81,7 @@ class GoodsSpec extends Controller
         // 一项规格内容作为一行数据插入
         foreach ($opts as $key=>$value) {
             $spec_content['item']=$value;
-            Db::table('ecs_goods_spec_item')->insert($spec_content);
+            Db::name('goods_spec_item')->insert($spec_content);
         }
         dump($opts);
     }

@@ -12,6 +12,7 @@
  */
 
 namespace app\common\logic;
+
 // use app\common\model\WxMaterial;
 
 
@@ -28,11 +29,9 @@ class EditorLogic
      */
     public function waterImage($img_path)
     {
-        
         require_once 'vendor/topthink/think-image/src/Image.php';
         require_once 'vendor/topthink/think-image/src/image/Exception.php';
-        if(strstr(strtolower($img_path),'.gif'))
-        {
+        if (strstr(strtolower($img_path), '.gif')) {
             require_once 'vendor/topthink/think-image/src/image/gif/Encoder.php';
             require_once 'vendor/topthink/think-image/src/image/gif/Decoder.php';
             require_once 'vendor/topthink/think-image/src/image/gif/Gif.php';
@@ -73,7 +72,7 @@ class EditorLogic
      * @param $string
      * @return string
      */
-    function to_unicode($string)
+    public function to_unicode($string)
     {
         $str = mb_convert_encoding($string, 'UCS-2', 'UTF-8');
         $arrstr = str_split($str, 2);
@@ -118,7 +117,7 @@ class EditorLogic
                 $state = "ERROR" . $file->getError();
             } else {
                 $return_url = '/'.UPLOAD_PATH.$new_path.$info->getSaveName();
-                $pos = strripos($return_url,'.');
+                $pos = strripos($return_url, '.');
                 $filetype = substr($return_url, $pos);
                 if ($save_path =='goods/' && $filetype != '.gif') {  //只有商品图才打水印，GIF格式不打水印
                     // $this->waterImage(".".$return_url);  //水印
