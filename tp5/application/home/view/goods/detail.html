@@ -42,20 +42,7 @@
   
 
 </style>
-<!-- jqzoom 效果 -->
-<script type="text/javascript">
-  $(function () {
-    $('.jqzoom').jqzoom({
-      zoomType: 'standard',
-      lens: true,
-      preloadImages: false,
-      alwaysOn: false,
-      title: false,
-      zoomWidth: 400,
-      zoomHeight: 400
-    });
-  })
-</script>
+
 
 <div style="clear:both;"></div>
 
@@ -190,9 +177,9 @@
       <!-- 图片预览区域 start -->
       <div class="preview fl">
         <div class="midpic">
-          <a href="__HOME__/images/preview_l1.jpg" class="jqzoom" rel="gal1">
+          <a href="{$images[0]['image_url']}" class="jqzoom" rel="gal1">
             <!-- 第一幅图片的大图 class 和 rel属性不能更改 -->
-            <img src="__HOME__/images/preview_m1.jpg" alt="" /> <!-- 第一幅图片的中图 -->
+            <img src="{$images[0]['image_url']}" width=350 height=350 alt="" /> <!-- 第一幅图片的中图 -->
           </a>
         </div>
 
@@ -203,34 +190,21 @@
           <a href="javascript:;" id="forward" class="on"></a>
           <div class="smallpic_wrap">
             <ul>
+              {if condition="!empty($images)"}
+                {foreach name="images" key ="key" item="item"}
+                <li class="cur">
+                    <a class="{if condition="!$key"}zoomThumbActive{/if}" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '{$item.image_url}',largeimage: '{$item.image_url}'}"><img
+                        src="{$item.image_url}"></a>
+                </li>
+                {/foreach}
+              {/if}
+
               <li class="cur">
-                <a class="zoomThumbActive" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '__HOME__/images/preview_m1.jpg',largeimage: '__HOME__/images/preview_l1.jpg'}"><img
+                <a class="" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '__HOME__/images/preview_m1.jpg',largeimage: '__HOME__/images/preview_l1.jpg'}"><img
                     src="__HOME__/images/preview_s1.jpg"></a>
               </li>
-              <li>
-                <a href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '__HOME__/images/preview_m2.jpg',largeimage: '__HOME__/images/preview_l2.jpg'}"><img
-                    src="__HOME__/images/preview_s2.jpg"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '__HOME__/images/preview_m3.jpg',largeimage: '__HOME__/images/preview_l3.jpg'}">
-                  <img src="__HOME__/images/preview_s3.jpg"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '__HOME__/images/preview_m4.jpg',largeimage: '__HOME__/images/preview_l4.jpg'}">
-                  <img src="__HOME__/images/preview_s4.jpg"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '__HOME__/images/preview_m5.jpg',largeimage: '__HOME__/images/preview_l5.jpg'}">
-                  <img src="__HOME__/images/preview_s5.jpg"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '__HOME__/images/preview_m6.jpg',largeimage: '__HOME__/images/preview_l6.jpg'}">
-                  <img src="__HOME__/images/preview_s6.jpg"></a>
-              </li>
-              <li>
-                <a href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '__HOME__/images/preview_m7.jpg',largeimage: '__HOME__/images/preview_l7.jpg'}">
-                  <img src="__HOME__/images/preview_s7.jpg"></a>
-              </li>
+              
+             
               <li>
                 <a href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '__HOME__/images/preview_m8.jpg',largeimage: '__HOME__/images/preview_l8.jpg'}">
                   <img src="__HOME__/images/preview_s8.jpg"></a>
@@ -313,14 +287,14 @@
     <div class="detail">
       <div class="detail_hd">
         <ul>
-          <li class="first"><span>商品介绍</span></li>
-          <li class="on"><span>商品评价</span></li>
+          <li class="first on"><span>商品介绍</span></li>
+          <li class=""><span>商品评价</span></li>
           <li><span>售后保障</span></li>
         </ul>
       </div>
       <div class="detail_bd">
         <!-- 商品介绍 start -->
-        <div class="introduce detail_div none">
+        <div class="introduce detail_div">
           <div class="attr mt15">
             <ul>
               <!-- 商品属性 -->
@@ -345,7 +319,7 @@
         <!-- 商品介绍 end -->
 
         <!-- 商品评论 start -->
-        <div class="comment detail_div mt10">
+        <div class="comment detail_div mt10 none">
           <div class="comment_summary">
             <div class="rate fl">
               <strong><em>90</em>%</strong> <br />
@@ -579,6 +553,20 @@
 
 <script type="text/javascript">
   document.execCommand("BackgroundImageCache", false, true);
+</script>
+<!-- jqzoom 效果 -->
+<script type="text/javascript">
+  $(function () {
+    $('.jqzoom').jqzoom({
+      zoomType: 'standard',
+      lens: true,
+      preloadImages: false,
+      alwaysOn: false,
+      title: false,
+      zoomWidth: 400,
+      zoomHeight: 400
+    });
+  })
 </script>
 <script>
   // 点击商品规格选项
