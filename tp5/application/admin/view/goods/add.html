@@ -96,9 +96,11 @@
                   <div class="col-sm-2">
                     <select class="form-control " name="cat_id" id="cat_id" onchange="getSubCat(this,'#cat_id_2',2);">
                       <option value="0">请选择一级分类</option>
-                      {volist name="list_one_cats" id="vo"}
-                      <option value={$vo.cat_id}>{$vo.cat_name}</option>
-                      {/volist}
+                      <volist name="list_one_cats" id="vo">
+                          <option value={$vo.cat_id}>{$vo.cat_name}</option>
+                      </volist>
+                      
+                     
                     </select>
                   </div>
                   <div class="col-sm-2">
@@ -122,9 +124,11 @@
                   <div class="col-sm-2">
                     <select class="form-control " name="brand_id">
                       <option value="0">请选择..</option>
-                      {volist name="list_brand" id="vo"}
-                      <option value={$vo.brand_id}>{$vo.brand_name}</option>
-                      {/volist}
+                      <volist name="list_brand" id="vo">
+                        <option value={$vo.brand_id}>{$vo.brand_name}</option>
+                      </volist>
+                      
+                      
                     </select>
 
                   </div>
@@ -136,9 +140,11 @@
                   <div class="col-sm-2">
                     <select class="form-control " name="suppliers_id">
                       <option value="0">不指定供应商属于本店商品</option>
-                      {volist name="list_suppliers" id="vo"}
-                      <option value={$vo.suppliers_id}>{$vo.suppliers_name}</option>
-                      {/volist}
+                      <volist name="list_suppliers" id="vo">
+                          <option value={$vo.suppliers_id}>{$vo.suppliers_name}</option>
+                      </volist>
+                     
+                      
                     </select>
 
                   </div>
@@ -375,9 +381,11 @@
                     <select class="form-control " name="goods_type" style="width:60%" onchange="getSpecList(this)">
                       <option value="0">请选择商品的类型</option>
 
-                      {volist name="list_goodstype" id="vo"}
-                      <option value={$vo.type_id}>{$vo.type_name}</option>
-                      {/volist}
+                      <volist name="list_goodstype" id="vo">
+                          <option value={$vo.type_id}>{$vo.type_name}</option>
+                      </volist>
+                      
+                   
                     </select>
                     <label for="" class="control-label">请选择商品的所属类型，进而完善此商品的属性</label>
                   </div>

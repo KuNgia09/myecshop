@@ -68,10 +68,9 @@
                       <td><select class="form-control" name="type_id" style="width: 400px;">
 
                           <option value="">请选择</option>
-                          {foreach $type as $vo}
-                            <option value="{$vo.type_id}">{$vo.type_name}</option>
-                          {/foreach}
-
+                          <foreach $type as $vo>
+                              <option value="{$vo.type_id}">{$vo.type_name}</option>
+                          </foreach>
 
                         </select></td>
 

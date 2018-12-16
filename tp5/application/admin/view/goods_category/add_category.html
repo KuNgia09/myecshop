@@ -11,12 +11,9 @@
   <link href="__ADMIN__/css/bootstrap.min.css" rel="stylesheet">
   <link href="__ADMIN__/font-awesome/css/font-awesome.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="__ADMIN__/Ionicons/css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="__ADMIN__/css/AdminLTE.min.css">
-  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
-        page. However, you can choose any other skin. Make sure you
-        apply the skin class to the body tag so the changes take effect. -->
+
   <link rel="stylesheet" href="__ADMIN__/css/skins/skin-blue.min.css">
   <link rel="stylesheet" href="__ADMIN__/css/mystyle.css">
   <link href="__COMMON__/iconfont/iconfont.css" rel="stylesheet">
@@ -72,12 +69,15 @@
                             <option value="0">顶级分类</option>
                             <!-- 输出商品分类 -->
                             <!-- very important -->
-                            {foreach name="list_cats" item="one"}
+                            <foreach name="list_cats" item="one">
                                 <option value={$one.cat_id}>{$one.cat_name}</option>
-                                {foreach name="one.child" item="two"}
+                                <foreach name="one.child" item="two">
                                     <option value={$two.cat_id}>&nbsp;&nbsp;&nbsp;&nbsp;{$two.cat_name}</option>
-                                    {/foreach}
-                            {/foreach}
+                                </foreach>
+                            </foreach>
+                               
+                                    
+                                  
                   
                   
                           </select>
