@@ -10,7 +10,7 @@
 		</div>
 	</li>
 	<li>
-		<a  class="kefu-font" <if condition="empty($userId['user_name'])">href='{:U('public/login')}'<else/>href='javascript:;' onclick='easemobim.bind({
+		<a  class="kefu-font" <if condition="empty($userId['user_name'])">href='{:url('public/login')}'<else/>href='javascript:;' onclick='easemobim.bind({
         //请使用自己的租户ID
          tenantId: "39449",
          //是否隐藏小的悬浮按钮
@@ -28,9 +28,9 @@
 		</div>
 	</li>
 	<li>
-		<a href="{:U('Cart/goods')}" class="kefu-font">购物车</a>
+		<a href="{:url('Cart/goods')}" class="kefu-font">购物车</a>
 	</li>
-	<li><a  class="kefu-font" <if condition="empty($userId['user_name'])">href='{:U('public/login')}'<else/>href='javascript:;' onclick='easemobim.bind({
+	<li><a  class="kefu-font" <if condition="empty($userId['user_name'])">href='{:url('public/login')}'<else/>href='javascript:;' onclick='easemobim.bind({
         //请使用自己的租户ID
          tenantId: "39449",
          //是否隐藏小的悬浮按钮
@@ -82,10 +82,10 @@
 		<div class="footer007 fl clearfix">
 			<foreach name="article_lists" item="article_list">
 				<dl class="fl">
-					<dt>{$key|msubstr=0,5}</dt>
+					<dt>{$key|substr=0,5}</dt>
 					<foreach name="article_list" item="article">
 						<dd>
-							<a href="{:U('Article/articleDetails',['id'=>$article['id']])}">{$article.name|msubstr=0,8}</a>
+							<a href="{:url('Article/articleDetails',['id'=>$article['id']])}">{$article.name|substr=0,8}</a>
 						</dd>
 					</foreach>
 				</dl>
@@ -124,10 +124,10 @@
 
 </div>
 <script type="text/javascript">
-var AREA_LIST_CITY = "{:U('getList')}";
+var AREA_LIST_CITY = "{:url('getList')}";
 </script>
-<script src="__JS__/header.js"></script>
-<script src="__JS__/home.js"></script>
+<script src="__HOME__/js/header.js"></script>
+<script src="__HOME__/js/home.js"></script>
 
 </body>
 </html>

@@ -38,6 +38,9 @@ class Goods extends Base
         // 查询商品的属性
         $goods_attrs=$GoodsLogic->getAttrInfo($id);
 
+        $breadcrumb=model('GoodsCategory')->getTitleByClassId($goods['cat_id'],'span');
+
+
         // 查询商品的规格
         /*
         goods_spec:array(2)
@@ -61,13 +64,26 @@ class Goods extends Base
 
         $goods_images=$GoodsLogic->getImagesInfo($id);
         
+
+
+
         // 商品通用信息
         $this->assign('result', $goods);
         // 商品规格信息
         $this->assign('spec_data', $goods_spec_info['goods_spec']);
         $this->assign('spec_key', $goods_spec_info['current_spec_key']);
-        $this->assign('attrs', $goods_attrs);
+        $this->assign('goods_attrs', $goods_attrs);
         $this->assign('goods_images', $goods_images);
+        
+        $giftHtml='';
+        $countHtml='';
+        $gift_id=[];
+        $a=$init_qr_code;
+        $this->assign('giftHtml', $giftHtml);
+        $this->assign('countHtml', $countHtml);
+        $this->assign('gift_id', implode(',', $gift_id));
+        $this->assign('requstURL', url('Settlement/shopping'));
+        $this->assign('breadcrumb',$breadcrumb);
         return $this->fetch('goods_info');
         
     }

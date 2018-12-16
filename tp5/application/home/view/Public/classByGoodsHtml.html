@@ -12,7 +12,7 @@
                     <dd class="menu">
                         <div class="clearfix">
                             <i class="fl {$top_cat.css_class}"></i>
-                            <span class="fl"><a href="{:U('Product/ProductList',['cid'=>$top_cat['id']])}">{$top_cat.class_name}</a></span>
+                            <span class="fl"><a href="{:url('Product/ProductList',['cid'=>$top_cat['id']])}">{$top_cat.class_name}</a></span>
                             <em class="fr"></em>
                         </div>
                         <div class="i-mc">
@@ -20,7 +20,7 @@
                                 <foreach name="goods_categories" item="second_cat">
                                     <eq name="second_cat.fid" value="$top_cat.id">
                                         <li class="fl">
-                                            <a href="{:U('Product/ProductList',['cid'=>$second_cat['id']])}">{$second_cat.class_name}</a>
+                                            <a href="{:url('Product/ProductList',['cid'=>$second_cat['id']])}">{$second_cat.class_name}</a>
                                         </li>
                                     </eq>
                                 </foreach>
@@ -29,12 +29,12 @@
                                 <eq name="second_cat.fid" value="$top_cat.id">
                                     <dl class="classification2 clearfix">
                                         <dt class="fl">
-                                            <a href="{:U('Product/ProductList',['cid'=>$second_cat['id']])}">{$second_cat.class_name}&nbsp;></a>
+                                            <a href="{:url('Product/ProductList',['cid'=>$second_cat['id']])}">{$second_cat.class_name}&nbsp;></a>
                                         </dt>
                                         <foreach name="goods_categories" item="third_cat">
                                             <eq name="third_cat.fid" value="$second_cat.id">
                                                 <dd class="fl clearfix">
-                                                    <a href="{:U('Product/ProductList',['cid'=>$third_cat['id']])}" class="fl">
+                                                    <a href="{:url('Product/ProductList',['cid'=>$third_cat['id']])}" class="fl">
                                                         {$third_cat.class_name}
                                                     </a>
                                                 </dd>
@@ -50,7 +50,7 @@
                </dd>
             </dl>
         	<ul class="fl clearfix navitems-2016">
-            <li class="fl"><a href="{:U('Index/index')}">首页</a></li>
+            <li class="fl"><a href="{:url('Index/index')}">首页</a></li>
             <foreach name="navs" item="nav">
                 <li class="fl">
                     <a href="{$nav.link}/id/{$nav.id}.html">{$nav.nav_titile}</a>

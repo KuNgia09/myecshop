@@ -1,13 +1,13 @@
 <extend name="Public/indexEdit" />
 <block name="content">
 
-  <link rel="stylesheet" href="__CSS__/toastr.min.css" />
-  <link rel="stylesheet" href="__COMMON__/css/page.css" />
+  <link rel="stylesheet" href="__HOME__/css/toastr.min.css" />
+  <link rel="stylesheet" href="__HOME__/css/page.css" />
   <!--当前位置-->
   <!--当前位置-->
   <div class="paper-current-main w">
 
-    当前位置：<span><a href="__SERVER__" class="godos_details_font">首页</a></span> > {$title} > <span class="active">{$result[$model::$title_d]}</span>
+    当前位置：<span><a href="__SERVER__" class="godos_details_font">首页</a></span> > {$breadcrumb|raw} > <span class="active">{$result.goods_name}</span>
   </div>
   <!--内容-->
   <!--内容-->
@@ -17,18 +17,20 @@
       <div class="procDeta-fl fl">
         <div class="preview">
           <div id="vertical" class="bigImg">
-            <img width="400" height="400" alt="" id="midimg" data-original='' src='<if condition="isset($goods_images)">{$goods_images.image_url}</if>' />
+            <img width="400" height="400" alt="" id="midimg" data-original='' src='<if condition="isset($goods_images)">{$goods_images[0]['image_url']}</if>' />
+              
             <div style="display:none;" id="winSelector"></div>
           </div>
-          <if condition="!empty($goodsImages)">
+          <if condition="!empty($goods_images)">
             <div class="smallImg">
 
               <div class="scrollbutton smallImgUp disabled"></div>
               <div id="imageMenu">
                 <ul>
-                  <foreach name="goodsImages" key="key" item="value">
-                    <li <if condition="$key === 0"> id="onlickImg"
-          </if> ><img src="{$value[$goodsImagesModel::$picUrl_d]}" width="68" height="68"></li>
+                  <foreach name="goods_images" key="key" item="value">
+                    <li <if condition="$key === 0"> id="onlickImg"</if> >
+          
+                  <img src="{$value.image_url}" width="68" height="68"></li>
           </foreach>
           </ul>
         </div>
@@ -39,8 +41,8 @@
     </div>
     <div class="clearfix product-inf">
 
-      <span class="fl">产品编码：{$specParseArray[$_GET[$model::$id_d]][$specModel::$sku_d]}</span>
-      <a href="{:url('collection/collection')}" data-id="{$_GET['id']}" class="fr collection clearfix" onclick="return false;"
+      <span class="fl">产品编码：001</span>
+      <a href="{:url('collection/collection')}" data-id="{$result.goods_id}" class="fr collection clearfix" onclick="return false;"
         id="collection_btn">
         <i class="fl"></i>
         <span class="fl">收藏商品</span>
@@ -98,69 +100,96 @@
               <div class="fl" style="width: 600px">
                 <if condition="!empty($item['children'])">
                   <foreach name="item['children']" key="itemKey" item="value">
-                    <span style="display: inline-block" class='<if condition="false!==in_array($value.id,$spec_key)">active</if>' value="{$value['id']}" onclick="GoodsObj.getBySpecForPrice(this,
+                    <span style="display: inline-block" class='<if condition="false!==in_array($value.id,$spec_key)">active</if>'
+                      value="{$value['id']}" onclick="GoodsObj.getBySpecForPrice(this,
                 'main','{:url('goodsDetails', null, null)}')">
-                {$value.item|raw}
-                </span>
+                      {$value.item|raw}
+                    </span>
 
+                  </foreach>
+                </if>
+              </div>
+
+            </div>
           </foreach>
         </if>
-      </div>
+        <div class="pr-quantity clearfix">
+          <h5 class="fl">购买数量：</h5>
+          <div class="choice fl">
+            <a href="javascript:;" class="fl">-</a>
+            <input id="goodsNum" type="text" class="fl" value="1">
+            <a href="javascript:;" class="fl">+</a>
+          </div>
+          <div class="fl">
+            {$result.stock}
+          </div>
+        </div>
 
-    </div>
-    </foreach>
-    </if>
-    <div class="pr-quantity clearfix">
-      <h5 class="fl">购买数量：</h5>
-      <div class="choice fl">
-        <a href="javascript:;" class="fl">-</a>
-        <input id="goodsNum" type="text" class="fl" value="1">
-        <a href="javascript:;" class="fl">+</a>
+        <div class="pr-button">
+          <form action="{$requstURL}" method="post">
+            <input type="hidden" value="{$result.goods_id}" name="goods_id">
+            <input type="hidden" value="" name="formId">
+            <input type="hidden" value="1" name="goods_num">
+            <input tyoe="hidden" value="{$gift_id}" name="gift_id">
+            <input type="hidden" value="{$result.member_price}" name="price_new">
+            <!-- <input type="hidden"  name="ware_id" value="{ $default[$sendModel::$id_d] }"/> -->
+            <input type="button" onclick="Cart.newAddCart(this, 'goodsNum', '{:url('Cart/new_cart_add')}')" value="加入购物车"
+              class="join">
+            <input type="submit" value="立即购买" class="collection">
+          </form>
+        </div>
       </div>
-      <div class="fl">
-        {$result[$model::$stock_d]}
-      </div>
     </div>
-
-    <!-- 						<div class="clearfix">
-							<h5 class="fl">发货地点：</h5>
-							<div class="pr-goodplace fl">
-								<div class="pr-goodplace-default"><span value="{ $default[$sendModel::$id_d] }">{ $default[$sendModel::$stockName_d] }</span><i></i></div>
-								<div class="pr-goodplace-up clearfix">
-									<  if condition="!empty($address)"   >
-										<   foreach name="address" key ='key' item="value"   >
-											<span value="{$key}" class="fl">{$value}</span>
-										<    /  foreach     >
-									<  /  if>
-								</div>
-							</div>
-						</div>
- -->
-    <div class="pr-button">
-      <form action="{$requstURL}" method="post">
-        <input type="hidden" value="{$result[$model::$id_d]}" name="goods_id">
-        <input type="hidden" value="{$_SESSION['formId']}" name="formId">
-        <input type="hidden" value="1" name="goods_num">
-        <input tyoe="hidden" value="{$gift_id}" name="gift_id">
-        <input type="hidden" value="{$result[$model::$priceMember_d]}" name="price_new">
-        <!-- <input type="hidden"  name="ware_id" value="{ $default[$sendModel::$id_d] }"/> -->
-        <input type="button" onclick="Cart.newAddCart(this, 'goodsNum', '{:url('Cart/new_cart_add')}')" value="加入购物车"
-          class="join">
-        <input type="submit" value="立即购买" class="collection">
-      </form>
-    </div>
-  </div>
-  </div>
   </div>
   </div>
   <!--商品-->
-  <div class="pr-commodity" id="goods_recommend">
+  <!-- <div class="pr-commodity" id="goods_recommend">
 
-  </div>
+  </div> -->
   <!--商品评论-->
   <div class="eva-comment">
     <div class="productDetaLeft fl" id="bestSelling">
+      <!-- 自己添加的 -->
+      <div class="categoryOne">
+        <h2>
+          <i></i>本店搜索
+        </h2>
+        <div>
+          <form action="/index.php/Home/Product/ProductList.html" method="get">
 
+
+            <p class="clearfix one">
+              <span class="fl">关键字&nbsp;&nbsp;</span> <input type="text" class="fl" name="keyword">
+            </p>
+            <p class="clearfix two">
+              <span class="fl">价格&nbsp;&nbsp;</span>
+              <i class="fl">￥<input type="text" name="begin_price" value=""></i>
+              <i class="fl">￥<input type="text" name="end_price" value=""></i>
+              <input type="hidden" name="show" value="show" />
+            </p>
+            <p class="three">
+              <input type="submit" value="搜&nbsp;索" class="btn product-search">
+            </p>
+          </form>
+        </div>
+      </div>
+      <!-- <dl class="proTop10">
+        <dt>
+          <i></i>畅销排行Top10
+        </dt>
+        <dd class="top10Item">
+          <a href="/index.php/Home/Goods/goodsDetails/id/3357.html">
+            <div class="img-parent fl">
+              <img src="/Uploads/goods/2017-06-30/5955f2cb9eb99.jpg" height="80" width="80"> <span>1</span>
+            </div>
+            <div class="top10Item-fr fl">
+              <p>海尔（Haier) EG8012B39SU1 8公斤变频滚筒洗衣机110 EG8012B39SU1 8公斤变频滚筒洗衣机 台</p>
+              <p>海尔（Haier) EG8012B39SU1 8公斤变频滚筒洗衣机</p>
+              <span>¥0.01</span>
+            </div>
+          </a>
+        </dd>
+      </dl> -->
     </div>
 
     <!--商品介绍记录-->
@@ -174,10 +203,10 @@
       <dl class="pro-comment active">
         <dt class="clearfix">
           <ol class="fl three">
-            <li>品牌：{$result[$model::$brandId_d]} </li>
-            <li>产品简介：{$result[$model::$description_d]}</li>
-            <if condition="$goodsAttr">
-              <foreach name="goodsAttr" item="attr">
+            <li>品牌：{$result.brand_id} </li>
+            <li>产品简介：{$result.goods_brief}</li>
+            <if condition="$goods_attrs">
+              <foreach name="$goods_attrs" item="attr">
                 <li>{$attr['attr_name']} : {$attr['attr_value']}</li>
               </foreach>
             </if>
@@ -185,7 +214,7 @@
           </ol>
         </dt>
         <dd class="introduce">
-          {$result[$detailModel::$detail_d]}
+          {$result.goods_desc|raw}
         </dd>
       </dl>
       <!--评价-->
@@ -209,14 +238,14 @@
   </div>
   <include file="Public/rightHtml" />
 
-  <script type="text/javascript" src="__JS__/evaluate.js"></script>
+  <script type="text/javascript" src="__HOME__/js/evaluate.js"></script>
 
-  <script type="text/javascript" src="__JS__/expansion.js"></script>
+  <script type="text/javascript" src="__HOME__/js/expansion.js"></script>
   <script type="text/javascript" src="__COMMON__/js/alert.js"></script>
   <script type="text/javascript" src="__COMMON__/js/cookie.js"></script>
-  <script type="text/javascript" src="__JS__/toastr.min.js"></script>
-  <script type="text/javascript" src="__JS__/goods/cart.js"></script>
-  <script type="text/javascript" src="__JS__/goods/goods.js"></script>
+  <script type="text/javascript" src="__HOME__/js/toastr.min.js"></script>
+  <script type="text/javascript" src="__HOME__/js/goods/cart.js"></script>
+  <script type="text/javascript" src="__HOME__/js/goods/goods.js"></script>
   <script type="text/javascript">
     {: sort($specParseArray) };
     GoodsObj.value = {: json_encode($specParseArray) };

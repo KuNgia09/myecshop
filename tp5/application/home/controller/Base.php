@@ -6,9 +6,14 @@ use think\Controller;
 // use think\Cache;
 use think\Db;
 use app\common\traitClass\SmsVerification;
+use app\common\traitClass\InternetTopTrait;
 
 class Base extends Controller
 {
+
+  use SmsVerification;
+  use InternetTopTrait;
+
   public function initialize()
   {
       // //检测平台
@@ -38,20 +43,20 @@ class Base extends Controller
       $article_model = model('Article');
       $article_lists=$article_model->getList();
       
-      // $str = $this->getFamily();
+      $str = 'ShopsN全网开源<a style="padding: 0px" href="http://www.shopsn.net">商城系统</a>&nbsp';
       
       // 导航
-      $navigatData = cache('navigatData');
+      $nav_data = cache('navigatData');
       
-      if (! $navigatData) {
-          $navigatData = Db::table("db_nav")->field("id,nav_titile,link,type")
+      if (! $nav_data) {
+          $nav_data = Db::table("db_nav")->field("id,nav_titile,link,type")
               ->where([
               'status' => 1
           ])
               ->order('sort')
               ->limit(11)
               ->select();
-          cache('navigatData', $navigatData, 15);
+          cache('nav_data', $nav_data, 600);
       }
       
       // 购物车数量
@@ -145,7 +150,7 @@ class Base extends Controller
       }
       // 获取组配置
       
-      $information = $this->getIntnetInformation();
+      $information = $this->getSiteInformation();
       // 底部公司名称
       $company_name = $this->get_intnetConfig()['company_name'];
       
@@ -155,7 +160,7 @@ class Base extends Controller
       
       $this->assign('OverdueCoupon', $OverdueCoupon);
       
-      $urls = "/index.php/Home/" . CONTROLLER_NAME . "/" . ACTION_NAME;
+      $urls = "/index.php/home/" . request()->controller() . "/" . request()->action() ;
       
       $this->assign('UsableCoupon', $UsableCoupon);
       
@@ -167,9 +172,10 @@ class Base extends Controller
       
       $this->assign('show_category', $show_categroy);
       
-      $this->assign('areaLocation', $this->getLocationArea());
+      $ip=request()->ip();
+      $this->assign('areaLocation', $ip);
       
-      $this->assign("navs", $navigatData);
+      $this->assign("navs", $nav_data);
       
       $this->assign("article_lists", $article_lists);
       
@@ -179,13 +185,14 @@ class Base extends Controller
       
       $this->assign('str', $str);
       
+      // trait里的static函数 使用self::
       $this->assign('hot_words', self::keyWord());
       
-      $this->assign('navs', $nav_data);
+     
       
       $this->assign('cartCount', $cartCount);
       
-      $this->assign('cart_goods', S('cart_goods'));
+      $this->assign('cart_goods', '');
       
       $this->assign('intnetTitle', $information['intnet_title']);
   }

@@ -11,6 +11,7 @@
 
 namespace app\common\traitClass;
 
+use app\common\tool\ArrayParse;
 
 
 /**
@@ -104,9 +105,9 @@ trait SmsVerification
         if (empty($this->key)) {
             return array();
         }
-        $groupConfig = BaseModel::getInstance(SystemConfigModel::class)->getDataByKey($this->key);
+        $groupConfig = model('SystemConfig')->getDataByKey($this->key);
         $receiveArray = array();
-        Tool::connect('ArrayParse')->oneArray($receiveArray, $groupConfig);
+        (new ArrayParse($receiveArray))->oneArray($receiveArray, $groupConfig);
         
         return $receiveArray;
     }
@@ -114,7 +115,7 @@ trait SmsVerification
     /**
      * 获取网站信息
      */
-    public function getIntnetInformation()
+    public function getSiteInformation()
     {
         //获取组配置
         $this->key = 'information_by_intnet';

@@ -3,24 +3,24 @@
 <head>
 	<meta charset="UTF-8">
 	<title>登录</title>
-	<link rel="stylesheet" href="__CSS__/base.css">
-	<link rel="stylesheet" href="__CSS__/style.css">
-	<link rel="stylesheet" href="__CSS__/reg.css">
+	<link rel="stylesheet" href="__HOME__/css/base.css">
+	<link rel="stylesheet" href="__HOME__/css/style.css">
+	<link rel="stylesheet" href="__HOME__/css/reg.css">
 	<script src="__CDN_JQ__"></script>
-	<script src="__JS__/login/login.js"></script>
+	<script src="__HOME__/js/login/login.js"></script>
     <script src="__LAYER__/layer.js"></script>
 </head>
 <body>
 	<!--头部-->
 	<div class="regiup-header w clearfix">
 		<div class="regiup-headerLeft fl">
-			<a href="{:U('Index/index')}" class=" fl">
+			<a href="{:url('Index/index')}" class=" fl">
 				<img src="{$logo_name}" alt=""/>
 				<h2>{$intnetTitle}</h2>
 			</a>
 			<h4 class="fl">欢迎登录</h4>
 		</div>
-		<div class="fr" style="padding-top:60px;padding-right:200px;"><a href="{:U('Index/index')}">网站首页</a></div>
+		<div class="fr" style="padding-top:60px;padding-right:200px;"><a href="{:url('Index/index')}">网站首页</a></div>
 	</div>
 	<div class="sini-section">
 		<div class="sini-main w">
@@ -38,7 +38,7 @@
 				</div>
 				<!--手机登录 密码登录form-->
 				<div class="signInParent">
-				    <!-- <form action="{:U('Public/login')}" method="post" onsubmit="return check_name();"> -->
+				    <!-- <form action="{:url('Public/login')}" method="post" onsubmit="return check_name();"> -->
 						<ul class="passwordS one hover">
 							<li class="clearfix userName">
 								<label class="fl"></label>
@@ -55,14 +55,14 @@
 									<input type="checkbox" class="checked" name="logon"  value="1">
 									自动登录
 								</label>
-								<a href="{:U('Public/confirm_account')}" class="fr">忘记密码？</a>
+								<a href="{:url('Public/confirm_account')}" class="fr">忘记密码？</a>
 							</li>
 							<li>
 								<input type="button" value="登&nbsp;&nbsp;录" onclick="check_name();" class="btn">
 							</li>
 						</ul><!-- 
 					 --><!-- </form> -->
-					<!-- <form action="{:U('Public/login_mobile')}" method="post" onsubmit="return check_tel();"> -->
+					<!-- <form action="{:url('Public/login_mobile')}" method="post" onsubmit="return check_tel();"> -->
 					<!--判断是否开启手机登录验证-->
 					<input type="hidden" name="is_start" value="{$is_start}">
 						<ul class="passwordS active" id="form_status">
@@ -82,13 +82,13 @@
 						</ul>
 					<!-- </form> -->
 					<div class="juion clearfix">
-						<a href="{:U('Public/reg')}" class="fr">免费注册</a>
+						<a href="{:url('Public/reg')}" class="fr">免费注册</a>
 					</div>
 					<!--外部账号登陆-->
 					<div class="external clearfix">
-						<a href="{:U('login', ['type'=>2])}" class="fl"><img src="__IMG__/q25.jpg">QQ登录</a>
-						<a href="{:U('login', ['type'=>3])}" class="fl"><img src="__IMG__/q26.jpg">微信登录</a>
-						<a href="{:U('login', ['type'=>1])}" class="fl active"><img src="__IMG__/q27.jpg">微博登录</a>
+						<a href="{:url('login', ['type'=>2])}" class="fl"><img src="__IMG__/q25.jpg">QQ登录</a>
+						<a href="{:url('login', ['type'=>3])}" class="fl"><img src="__IMG__/q26.jpg">微信登录</a>
+						<a href="{:url('login', ['type'=>1])}" class="fl active"><img src="__IMG__/q27.jpg">微博登录</a>
 					</div>
 				</div>
 			</div>
@@ -111,13 +111,13 @@
 
 				<div class="signInParent">
 					<div class="juion clearfix">
-						<a href="{:U('Public/reg')}" class="fr">免费注册</a>
+						<a href="{:url('Public/reg')}" class="fr">免费注册</a>
 					</div>
 					<!--外部账号登陆-->
 					<div class="external clearfix">
-						<a href="{:U('login', ['type'=>2])}" class="fl"><img src="__IMG__/q25.jpg">QQ登录</a>
-						<a href="{:U('login', ['type'=>3])}" class="fl"><img src="__IMG__/q26.jpg">微信登录</a>
-						<a href="{:U('login', ['type'=>1])}" class="fl active"><img src="__IMG__/q27.jpg">微博登录</a>
+						<a href="{:url('login', ['type'=>2])}" class="fl"><img src="__IMG__/q25.jpg">QQ登录</a>
+						<a href="{:url('login', ['type'=>3])}" class="fl"><img src="__IMG__/q26.jpg">微信登录</a>
+						<a href="{:url('login', ['type'=>1])}" class="fl active"><img src="__IMG__/q27.jpg">微博登录</a>
 					</div>
 				</div>
 			</div>

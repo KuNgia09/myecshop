@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>忘记密码</title>
-    <link rel="stylesheet" href="__CSS__/base.css">
-    <link rel="stylesheet" href="__CSS__/style.css">
+    <link rel="stylesheet" href="__HOME__/css/base.css">
+    <link rel="stylesheet" href="__HOME__/css/style.css">
     <script src="__CDN_JQ__"></script>
     <script src="__LAYER__/layer.js"></script>
     <script>
@@ -12,7 +12,7 @@
             $('#code').keyup(function(){
                 var code = $('#code').val();
                 if(code.length == 4 && $('#check_code').val() == 0){
-                    $.get("{:U('Public/check_code')}", {code:code},function(data){
+                    $.get("{:url('Public/check_code')}", {code:code},function(data){
                         if(data == 1){
                             $('#check_code').val(1);
                             layer.tips('√ 通过验证', '#code',{
@@ -36,7 +36,7 @@
 <!--头部-->
 <div class="regiup-header w clearfix">
     <div class="regiup-headerLeft">
-        <a href="{:U('Index/index')}" class=" fl">
+        <a href="{:url('Index/index')}" class=" fl">
             <img src="{$logo_name}" alt=""/>
         </a>
         <h4 class="fl">找回密码</h4>
@@ -72,7 +72,7 @@
             <div class="container">
                 <div class="one clearfix">
                     <div class="fl">登录名：</div>
-                    <form action="{:U('Public/verify_identity')}" method="post" class="form">
+                    <form action="{:url('Public/verify_identity')}" method="post" class="form">
                         <div class="fr">
                             <input type="hidden" id="check_name" value="0">
                             <input type="text" name="name" id="name" onblur="Search()" class="txt">
@@ -84,12 +84,12 @@
                     <div class="fl">验证码：</div>
                     <!--<div class="fr" id="code_img">-->
                         <!--<input type="text" id="code" class="txt1" style="text-transform: uppercase;" >-->
-                        <!--<img style="border:1px solid #D4E7F6; cursor:pointer;" title="点我刷新哦！" src="{:U('Public/verify')}" onclick="this.src='/index.php/Home/Public/verify?d='+Math.random();"/>-->
+                        <!--<img style="border:1px solid #D4E7F6; cursor:pointer;" title="点我刷新哦！" src="{:url('Public/verify')}" onclick="this.src='/index.php/Home/Public/verify?d='+Math.random();"/>-->
                         <!--<span><input type="hidden" id="check_code" value="0">点击图片刷新!</span>-->
                     <!--</div>-->
                     <div class="fr">
                         <input type="text" class="txt"  id="old_code">
-                        <img id="checkpic" onclick="changing(this)" src="{:U('Public/verify')}">
+                        <img id="checkpic" onclick="changing(this)" src="{:url('Public/verify')}">
                         <input type="hidden" id="code" value="0">
                         <span>请输入验证码</span>
                     </div>
@@ -118,11 +118,11 @@
     <li>© 20016-2018 亿速网络用品 版权所有，并保留所有权利</li>
 </ul>
 </body>
-<script src="__JS__/login/password.js"></script>
+<script src="__HOME__/js/login/password.js"></script>
 <script>
     function Search() {
         var name = $('#name').val();
-        $.post("{:U('Public/confirm_account')}", {name:name},function(data){
+        $.post("{:url('Public/confirm_account')}", {name:name},function(data){
             if(data == 1){
                 $('#check_name').val(1);
                 layer.tips('有效账号!', '#name',{

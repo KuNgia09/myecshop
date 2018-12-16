@@ -11,3 +11,4 @@
 
 // 应用公共文件
 require 'application/common/common.php';
+error_reporting(E_ERROR | E_PARSE );

@@ -7,7 +7,7 @@
             <foreach name="top_big_ad" item="big_ad">
                 <div class="advertisement">
                     <a data="{$big.ad_link}" gg="{$big.id}" onclick="addAd(this)" target=_blank>
-                        <img src="__SERVER__{$big_ad.pic_url}" width="100%" height="100"> </a>
+                        <img src="upload/intnet/2017-07-04/595b75e1213d3.png" width="100%" height="100"> </a>
                         <input type="button" class="advertisement_delete" id="advertisement_delete"/>
                 </div>
             </foreach>
@@ -26,14 +26,14 @@
     <div class="home-header">
         <div class="home-header-main clearfix">
             <!--logo-->
-            <a href="{:U('Index/index')}" class="logo fl">
-               <img style="max-width: 200px;" src="{$logo_name}" alt=""/>
+            <a href="{:url('Index/index')}" class="logo fl">
+               <img style="max-width: 200px;" src="/upload/intnet/2017-07-04/595b75e1213d3.png" alt=""/>
                 <h2>{$intnetTitle}</h2>
             </a>
             <!--搜索框-->
             <div class="home-search-parent fl">
                 <div class="home-search clearfix">
-                    <form  id="formsarch" action="{:U('Product/ProductList')}" method="get">
+                    <form  id="formsarch" action="{:url('Product/ProductList')}" method="get">
                         <input type="text" class="fl input" name="keyword" id="pp" <if condition="!empty($goods_title)">value="{$goods_title|msubstr=0,40}"</if>/>
                         <input type="hidden" name="show" value="show"/>
                         <input type="hidden" name="id" class="fl input"  id="ser-id" value=""/>
@@ -45,7 +45,7 @@
                 <dl class="home-hotsearch clearfix">
                 <dt class="fl">热门搜索：</dt>
                 <foreach name="hot_words" item="hot_word">
-                    <dd class="fl"><a href="{:U('Product/ProductList',['id'=>$hot_word['id']])}">{$hot_word.hot_words}</a></dd>
+                    <dd class="fl"><a href="{:url('Product/ProductList',['id'=>$hot_word['id']])}">{$hot_word.hot_words}</a></dd>
                 </foreach>
             </dl>
             </div>
@@ -53,7 +53,7 @@
             <div class="home-shopping fl">
                 <div class="home-shopping-top clearfix">
                     <em class="fl"></em>
-                    <span class="fl"><a href="{:U('Cart/goods')}">我的购物车</a></span>
+                    <span class="fl"><a href="{:url('Cart/goods')}">我的购物车</a></span>
                     <i class="fl"></i>
                 </div>
                 <div class="home-individual clearfix">
@@ -70,7 +70,7 @@
                                 <a href="javscript:;" class="fl">
                                     <img src="{$cart.pic_url}" alt="">
                                 </a>
-                                <a href="{:U('Goods/goodsDetails',['id'=>$cart['goods_id'],'goods_num'=>$cart['goods_num']])}" class="fl con">
+                                <a href="{:url('Goods/goodsDetails',['id'=>$cart['goods_id'],'goods_num'=>$cart['goods_num']])}" class="fl con">
                                     {$cart.title}
                                 </a>
                                 <strong class="fl">
@@ -84,7 +84,7 @@
                                     <a href="javscript:;" class="fl">
 
                                     </a>
-                                    <a href="{:U('Cart/goods')}" class="fl con">
+                                    <a href="{:url('Cart/goods')}" class="fl con">
                                         套餐
                                     </a>
                                     <strong class="fl">
@@ -112,25 +112,25 @@
                     <em class="fl"></em>
                 </dt>
                 <foreach name="goods_categories" item="top_cat">
-                    <eq name="top_cat.fid" value="0" >
+                    <eq name="top_cat.parent_id" value="0" >
                         <dd class="menu">
                             <div class="clearfix">
-                                <i class="fl {$top_cat.css_class}"></i>
-                                <span class="fl"><a href="{:U('Product/ProductList',['cid'=>$top_cat['id']])}">{$top_cat.class_name}</a></span>
+                                <i class="fl"></i>
+                                <span class="fl"><a href="{:url('Product/ProductList',['cid'=>$top_cat['cat_id']])}">{$top_cat.cat_name}</a></span>
                                 <em class="fr"></em>
                             </div>
                             <div class="i-mc">
                                 <foreach name="goods_categories" item="second_cat">
-                                    <eq name="second_cat.fid" value="$top_cat.id">
+                                    <eq name="second_cat.parent_id" value="$top_cat.cat_id">
                                         <dl class="classification2 clearfix">
                                             <dt class="fl">
-                                                <a href="{:U('Product/ProductList',['cid'=>$second_cat['id']])}">{$second_cat.class_name}&nbsp;<b>></b></a>
+                                                <a href="{:url('Product/ProductList',['cid'=>$second_cat['cat_id']])}">{$second_cat.cat_name}&nbsp;<b>></b></a>
                                             </dt>
                                             <dd class="fl clearfix">
                                                 <foreach name="goods_categories" item="third_cat">
-                                                    <eq name="third_cat.fid" value="$second_cat.id">
-                                                            <a href="{:U('Product/ProductList',['cid'=>$third_cat['id']])}" class="fl">
-                                                                {$third_cat.class_name}
+                                                    <eq name="third_cat.parent_id" value="$second_cat.cat_id">
+                                                            <a href="{:url('Product/ProductList',['cid'=>$third_cat['cat_id']])}" class="fl">
+                                                                {$third_cat.cat_name}
                                                             </a>
                                                     </eq>
                                                 </foreach>
@@ -167,7 +167,7 @@
             _this = $(this);
             clearInterval(clear);
             clear = setTimeout(function(){
-                var _url ="{:U('Goods/search')}";
+                var _url ="{:url('Goods/search')}";
                 var _data = _this.val();
                 $.post(_url,{title:_data},function(data){
                     if(data.status==0){
@@ -175,7 +175,7 @@
                     }
                     if(data.status==1){
                         var _a=data.data;
-                        var _b="{:U('Goods/goodsDetails')}"
+                        var _b="{:url('Goods/goodsDetails')}"
                         var _html='';
                         for (var i in _a){
                             _html +='<div><a href="'+_b+'?id='+_a[i].id+'"> '+_a[i].title+'</a></div>';
@@ -206,7 +206,7 @@
     <!--ajax删除购物车里面的商品-->
     <script>
         $('#new_cart_data').on('click','.dels',function(){
-            var _url="{:U('Goods/dels')}";
+            var _url="{:url('Goods/dels')}";
             var _id=$(this).attr('data');
             $.post(_url,{id:_id},function(data){
                 if(data.status==0){
@@ -221,7 +221,7 @@
     <!--搜索跳转-->
     <!--<script>
         function searcher(){
-            var _url ="{:U('Goods/searchOne')}";
+            var _url ="{:url('Goods/searchOne')}";
             var _data=$('#pp').val();
             $.post(_url,{title:_data},function(data){
                 if(data.status==0){
@@ -237,7 +237,7 @@
         function addAd(ele){
             var _id=$(ele).attr('gg');
             var _reurl=$(ele).attr('data');
-            var _locatUrl="{:U('Ad/addhit')}";
+            var _locatUrl="{:url('Ad/addhit')}";
             $.post(_locatUrl, {id:_id},function(data){
                 console.log(data.msg);
             },'JSON')

@@ -129,7 +129,8 @@
 })(window);
 
 window.onload = function () {
-  GoodsObj.ajaxGetGuess('guess', 1);
+  // GoodsObj.ajaxGetGuess('guess', 1);
+  
   GoodsObj.ajaxGetGuess('bestSelling', 1, REC_URL);
   GoodsObj.ajaxGetGuess('Consultation', 1, CON_URL);
   GoodsObj.recommend(RECOMMEND_URL);

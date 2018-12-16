@@ -3,8 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>忘记密码</title>
-	<link rel="stylesheet" href="__CSS__/base.css">
-	<link rel="stylesheet" href="__CSS__/style.css">
+	<link rel="stylesheet" href="__HOME__/css/base.css">
+	<link rel="stylesheet" href="__HOME__/css/style.css">
 	<script src="__CDN_JQ__"></script>
 	<script src="__LAYER__/layer.js"></script>
 </head>
@@ -12,7 +12,7 @@
 	<!--头部-->
 	<div class="regiup-header w clearfix">
         <div class="regiup-headerLeft">
-            <a href="{:U('Index/index')}" class=" fl">
+            <a href="{:url('Index/index')}" class=" fl">
                 <img src="{$logo_name}" alt=""/>
             </a>
             <h4 class="fl">找回密码</h4>
@@ -85,7 +85,7 @@
 					<!--</div>-->
 					<div class="three">
 					    <input type="hidden" id="tel" value="{$res.mobile}">
-					    <form action="{:U('Public/set_password')}" method="post" class="form">
+					    <form action="{:url('Public/set_password')}" method="post" class="form">
 					    <input type="hidden" name="id" id="id" value="{$res.id}">
 					    </form>	
 						<input type="button" value="下一步" id="user-btn">
