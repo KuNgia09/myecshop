@@ -7,7 +7,7 @@
   <!--当前位置-->
   <div class="paper-current-main w">
 
-    当前位置：<span><a href="__SERVER__" class="godos_details_font">首页</a></span> > {$breadcrumb|raw} > <span class="active">{$result.goods_name}</span>
+    当前位置：<span><a href="#" class="godos_details_font">首页</a></span> > {$breadcrumb|raw} > <span class="active">{$result.goods_name}</span>
   </div>
   <!--内容-->
   <!--内容-->
@@ -41,7 +41,7 @@
     </div>
     <div class="clearfix product-inf">
 
-      <span class="fl">产品编码：001</span>
+      <span class="fl">产品编码:{$result.goods_sn}</span>
       <a href="{:url('collection/collection')}" data-id="{$result.goods_id}" class="fr collection clearfix" onclick="return false;"
         id="collection_btn">
         <i class="fl"></i>
@@ -62,9 +62,9 @@
       <p class="pr-price-top">商品价格：<span>￥<i>
             <if condition="!empty($_SESSION['user_id'])">{:sprintf("%01.2f",$result.member_price)}
               <!-- 活动价格 -->
-              <elseif condition="!empty($result.is_shelves)" />{$result.member_price}
+              <elseif condition="!empty($result.is_shelves)" />{$result.shop_price}
               <!-- 未登录价格 -->
-              <else />{$result.market_price}
+              <else />{$result.shop_price}
             </if>
           </i> </span></p>
       {$giftHtml}
@@ -93,16 +93,15 @@
           </div>
         </if>
 
-        <if condition="!empty($spcClassData)">
-          <foreach name="spcClassData" key="key" item="item">
+        <if condition="!empty($spec_data)">
+          <foreach name="spec_data" key="key" item="item">
             <div class="pr-sps clearfix spec" style="width: 700px">
               <h5 class="fl" value="{$item['id']}">{$item['name']}：</h5>
               <div class="fl" style="width: 600px">
                 <if condition="!empty($item['children'])">
                   <foreach name="item['children']" key="itemKey" item="value">
                     <span style="display: inline-block" class='<if condition="false!==in_array($value.id,$spec_key)">active</if>'
-                      value="{$value['id']}" onclick="GoodsObj.getBySpecForPrice(this,
-                'main','{:url('goodsDetails', null, null)}')">
+                      value="{$value['id']}" >
                       {$value.item|raw}
                     </span>
 
@@ -203,7 +202,7 @@
       <dl class="pro-comment active">
         <dt class="clearfix">
           <ol class="fl three">
-            <li>品牌：{$result.brand_id} </li>
+            <li>品牌：{$result.brand_name} </li>
             <li>产品简介：{$result.goods_brief}</li>
             <if condition="$goods_attrs">
               <foreach name="$goods_attrs" item="attr">
@@ -247,10 +246,10 @@
   <script type="text/javascript" src="__HOME__/js/goods/cart.js"></script>
   <script type="text/javascript" src="__HOME__/js/goods/goods.js"></script>
   <script type="text/javascript">
-    {: sort($specParseArray) };
-    GoodsObj.value = {: json_encode($specParseArray) };
+   
+    GoodsObj.value = {:json_encode($spec_goods_price) };
     GoodsObj.connectUrl = "{:url('ajaxGetGuessLove')}";
-    GoodsObj.goodsId = { $_GET['id']};
+    GoodsObj.goodsId = {$result['goods_id']};
     var REC_URL = "{:url('bestSelling')}";
     var CON_URL = "{:url('ajaxGetGoodsConsulation')}";
     var COMMENT_URL = "{:url('ajaxGetGoodsComment')}";

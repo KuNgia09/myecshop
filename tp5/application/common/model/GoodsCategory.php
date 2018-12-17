@@ -7,9 +7,9 @@ use think\Db;
 class GoodsCategory extends Model
 {
     // 设置表名
-    protected $table = 'ecs_category';
+    // protected $table = 'db_goods_category';
 
-    protected $pk = 'cat_id';
+    protected $pk = 'id';
   /**
      * 获取所有数据
      *
@@ -18,11 +18,11 @@ class GoodsCategory extends Model
     public function getList()
     {
 
-        $parentField = 'cat_id,cat_name,parent_id';
+        $parentField = "$this->pk as cat_id,cat_name,parent_id";
 
         $parent = $this->field( $parentField )
-            ->where( 'shoutui=1  and is_show_nav=1' )
-            ->order( 'sort_order desc' )
+            ->where( 'shoutui=1  and is_show_nav=0' )
+            ->order( 'sort_num desc' )
             ->select();
 
         return $parent;
@@ -46,10 +46,11 @@ class GoodsCategory extends Model
 
         $number++;
 
-        $titleData = $this->field('cat_id,cat_name,parent_id'
-        )
-            ->where('cat_id',$classId )
-            ->find();
+        $titleData = $this->field("$this->pk,cat_name,parent_id")
+        ->where($pk,$classId )
+        ->find();
+        
+            
 
         if( empty( $titleData ) ){
             return null;

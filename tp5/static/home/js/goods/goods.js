@@ -7,133 +7,138 @@
 (
   function () {
 
-  function Goods() {
+    function Goods() {
 
-    this.value = '';
+      this.value = '';
 
-    this.connectUrl = '';
+      this.connectUrl = '';
 
-    this.goodsId = 0;
+      this.goodsId = 0;
 
-    this.page = 1;
+      this.page = 1;
 
-    this.getBySpecForPrice = function (obj, idName, url) {
+      this.getBySpecForPrice = function (obj, idName, url) {
 
-      if (!$('#' + idName).length) {
-        return false;
-      }
-      $(obj).siblings('span').removeClass('active');
-      $(obj).addClass('active');
-      var val = '';
-      var small = [];
-      $(obj).parents('#' + idName).find('.spec').each(function () {
-        var span = $(this).find('.active');
-        small.push(span.attr('value'));
-        small.sort(function (first, next) {
-          return first - next > 0;
-        });
-        val = small.join("_");
-      });
-      //val = val.substring(1);
-
-      //			val = val.split("_").reverse().join("_");
-      var spcData = this.value;
-
-      if (!(spcData instanceof Array) || this.isEmptyArray(spcData)) {
-        return false;
-      }
-      var i = 0;
-      for (i in spcData) {
-        if (spcData[i].key == val) {
-          location.href = url + '/id/' + spcData[i].id + '.html';
-          return true;
-        }
-      }
-    }
-
-    this.ajaxGetGuess = function (id, page, url) {
-
-      if (!this.isNumer(page)) {
-        return false;
-      }
-      this.dataType = '';
-
-      url = typeof url === 'undefined' ? this.connectUrl : url;
-
-      return this.post(url, { p: page, id: this.goodsId }, function (res) {
-        $('#' + id).html(res);
-      })
-    }
-
-    //猜你喜欢-换一换
-    this.changeFor = function (id, pageCount) {
-      this.page += 1;
-      console.log(this.page);
-      return pageCount >= this.page ? this.ajaxGetGuess(id, this.page) : false;
-    }
-
-		/**
-		 * 添加咨询 
-		 */
-    this.Consulation = function (event, url) {
-
-      if (cookies.get('flag') != 'undefined') {
-        return toastr.error("已经提问过");
-      }
-
-      var obj = $(event).siblings('input[type="text"]');
-
-      var value = obj.val();
-      if (!(/^[\u4e00-\u9fa5]+$/i.test(value)) || !value) {
-        toastr.error("请输入中文");
-        return false;
-      }
-
-      var json = {};
-      json[obj.attr('name')] = obj.val();
-      json['goods_id'] = this.goodsId;
-
-      $.post(url, json, function (res) {
-
-        if (res.hasOwnProperty('status') && res.status == 1) {
-          toastr.success(res.message);
-
-          if (!cookies.get('flag')) {
-            cookies.set('flag', res.data.flag, 2);
-          }
-          return true;
-        }
-        toastr.error(res.message);
-        return true;
-      });
-    }
-
-		/**
-		 * 商品推荐.最佳组合,优惠套餐
-		 */
-    this.recommend = function (url) {
-      var goods_id = this.goodsId;
-      var data = { 'goods_id': goods_id };
-      $.get(url, data, function (ret) {
-        if (!ret) {
+        if (!$('#' + idName).length) {
           return false;
         }
-        $('#goods_recommend').html(ret);
-      });
-    }
+        $(obj).siblings('span').removeClass('active');
+        $(obj).addClass('active');
+        var val = '';
+        var small = [];
+        $(obj).parents('#' + idName).find('.spec').each(function () {
+          var span = $(this).find('.active');
+          small.push(span.attr('value'));
+          small.sort(function (first, next) {
+            return first - next > 0;
+          });
+          val = small.join("_");
+        });
+        //val = val.substring(1);
 
-  }
-  Goods.prototype = Tool;
-  var goodsObj = new Goods();
-  window.GoodsObj = goodsObj;
-})(window);
+        //			val = val.split("_").reverse().join("_");
+        var spcData = this.value;
+
+        if (!(spcData instanceof Array) || this.isEmptyArray(spcData)) {
+          return false;
+        }
+        var i = 0;
+        for (i in spcData) {
+          if (spcData[i].key == val) {
+            location.href = url + '/id/' + spcData[i].id + '.html';
+            return true;
+          }
+        }
+      }
+
+      this.ajaxGetGuess = function (id, page, url) {
+
+        if (!this.isNumer(page)) {
+          return false;
+        }
+        this.dataType = '';
+
+        url = typeof url === 'undefined' ? this.connectUrl : url;
+
+        return this.post(url, {
+          p: page,
+          id: this.goodsId
+        }, function (res) {
+          $('#' + id).html(res);
+        })
+      }
+
+      //猜你喜欢-换一换
+      this.changeFor = function (id, pageCount) {
+        this.page += 1;
+        console.log(this.page);
+        return pageCount >= this.page ? this.ajaxGetGuess(id, this.page) : false;
+      }
+
+      /**
+       * 添加咨询 
+       */
+      this.Consulation = function (event, url) {
+
+        if (cookies.get('flag') != 'undefined') {
+          return toastr.error("已经提问过");
+        }
+
+        var obj = $(event).siblings('input[type="text"]');
+
+        var value = obj.val();
+        if (!(/^[\u4e00-\u9fa5]+$/i.test(value)) || !value) {
+          toastr.error("请输入中文");
+          return false;
+        }
+
+        var json = {};
+        json[obj.attr('name')] = obj.val();
+        json['goods_id'] = this.goodsId;
+
+        $.post(url, json, function (res) {
+
+          if (res.hasOwnProperty('status') && res.status == 1) {
+            toastr.success(res.message);
+
+            if (!cookies.get('flag')) {
+              cookies.set('flag', res.data.flag, 2);
+            }
+            return true;
+          }
+          toastr.error(res.message);
+          return true;
+        });
+      }
+
+      /**
+       * 商品推荐.最佳组合,优惠套餐
+       */
+      this.recommend = function (url) {
+        var goods_id = this.goodsId;
+        var data = {
+          'goods_id': goods_id
+        };
+        $.get(url, data, function (ret) {
+          if (!ret) {
+            return false;
+          }
+          $('#goods_recommend').html(ret);
+        });
+      }
+
+    }
+    Goods.prototype = Tool;
+    var goodsObj = new Goods();
+    window.GoodsObj = goodsObj;
+  })(window);
 
 window.onload = function () {
   // GoodsObj.ajaxGetGuess('guess', 1);
-  
-  GoodsObj.ajaxGetGuess('bestSelling', 1, REC_URL);
-  GoodsObj.ajaxGetGuess('Consultation', 1, CON_URL);
-  GoodsObj.recommend(RECOMMEND_URL);
+
+  // GoodsObj.ajaxGetGuess('bestSelling', 1, REC_URL);
+  // GoodsObj.ajaxGetGuess('Consultation', 1, CON_URL);
+  // GoodsObj.recommend(RECOMMEND_URL);
 }
 
 // 页面加载完成后（不包括图片）后执行
@@ -142,7 +147,10 @@ window.onload = function () {
 $(
   function () {
     var comment_url = COMMENT_URL;
-    var data = { goods_id: GoodsObj.goodsId, show: 'view' };
+    var data = {
+      goods_id: GoodsObj.goodsId,
+      show: 'view'
+    };
     $.get(comment_url, data, function (ret) {
       if (ret) {
         $('#comment').html(ret);
@@ -226,8 +234,8 @@ $(
         var div1_2 = $('<div></div>');
         div1_2.addClass('data');
         var time = new Date(parseInt(data.create_time) * 1000);
-        var time = time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()
-          + ' ' + time.getHours() + ':' + time.getMinutes();
+        var time = time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() +
+          ' ' + time.getHours() + ':' + time.getMinutes();
         div1_2.text(time);
         div1.append(div1_2);
 
@@ -373,22 +381,29 @@ $(
     //晒图 右按钮
     $(document).on('click', '.comments-showImgSwitch-thumbnails .thumb-prevFr', function () {
       N++;
-      $('.Consultation .thumb-prevCentent ul').stop().animate({ left: -N * $('.Consultation .thumb-prevCentent').outerWidth() })
+      $('.Consultation .thumb-prevCentent ul').stop().animate({
+        left: -N * $('.Consultation .thumb-prevCentent').outerWidth()
+      })
       return false;
     });
     //晒图 左按钮
     $(document).on('click', '.comments-showImgSwitch-thumbnails .thumb-prevFl', function () {
       if (N <= 0) return;
       N--;
-      $('.Consultation .thumb-prevCentent ul').stop().animate({ left: -N * $('.Consultation .thumb-prevCentent').outerWidth() })
+      $('.Consultation .thumb-prevCentent ul').stop().animate({
+        left: -N * $('.Consultation .thumb-prevCentent').outerWidth()
+      })
       return false;
     });
 
+    
     // 收藏
     $('#collection_btn').on('click', function () {
       var url = $(this).attr('href');
       var gid = $(this).attr('data-id');
-      $.post(url, { goods_id: gid }, function (res) {
+      $.post(url, {
+        goods_id: gid
+      }, function (res) {
         if (res == 0) {
           layer.msg('收藏失败');
           return false;
@@ -402,5 +417,5 @@ $(
     });
 
   }
-  
-  );
+
+);

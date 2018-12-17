@@ -201,7 +201,7 @@ class GoodsLogic extends Model
                 }
             }
         }
-        return ['current_spec_key'=>$current_spec_key,'goods_spec'=>$goods_spec];
+        return ['current_spec_key'=>$current_spec_key,'goods_spec'=>$goods_spec,'spec_goods_price'=>$spec_goods_price];
     }
 
     /**

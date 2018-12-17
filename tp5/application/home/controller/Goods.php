@@ -31,13 +31,14 @@ class Goods extends Base
         }
 
         $goods=Db::name('goods')->where('goods_id', $id)->find();
-        
+        $goods['brand_name']=Db::name('brand')->where('brand_id',$goods['brand_id'])->value('brand_name');
         $goods_name=$goods['goods_name'];
        
         $GoodsLogic=new GoodsLogic();
         // 查询商品的属性
         $goods_attrs=$GoodsLogic->getAttrInfo($id);
 
+        // 面包屑
         $breadcrumb=model('GoodsCategory')->getTitleByClassId($goods['cat_id'],'span');
 
 
@@ -69,7 +70,9 @@ class Goods extends Base
 
         // 商品通用信息
         $this->assign('result', $goods);
-        // 商品规格信息
+        // 商品每种规格价格  库存 对应spec_goods_price表
+        $this->assign('spec_goods_price', $goods_spec_info['spec_goods_price']);
+        // 商品的规格名 规格项
         $this->assign('spec_data', $goods_spec_info['goods_spec']);
         $this->assign('spec_key', $goods_spec_info['current_spec_key']);
         $this->assign('goods_attrs', $goods_attrs);
@@ -78,7 +81,7 @@ class Goods extends Base
         $giftHtml='';
         $countHtml='';
         $gift_id=[];
-        $a=$init_qr_code;
+        
         $this->assign('giftHtml', $giftHtml);
         $this->assign('countHtml', $countHtml);
         $this->assign('gift_id', implode(',', $gift_id));

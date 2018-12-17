@@ -79,20 +79,20 @@ class GoodsCategory extends Controller
 
         // 以一级分类作为分页参数
        
-        $sql="SELECT COUNT(*) as count from ecs_category where parent_id=0 LIMIT 1";
+        $sql="SELECT COUNT(*) as count from ecs_goods_category where parent_id=0 LIMIT 1";
         // 获取一级分类的个数
       
         $one_cat_count=Db::query($sql)[0]['count'];
         
         // 先获取一级分类
-        $sql="SELECT * FROM ecs_category where parent_id=0 LIMIT $limit OFFSET $offset";
+        $sql="SELECT * FROM ecs_goods_category where parent_id=0 LIMIT $limit OFFSET $offset";
         $one_category=DB::query($sql);
       
         
         if (!empty($one_category)) {
             // 获取一级分类下的id
             $cat_id_str=$this->joinId($one_category);
-            $sql="SELECT * FROM ecs_category where (parent_id in $cat_id_str)";
+            $sql="SELECT * FROM ecs_goods_category where (parent_id in $cat_id_str)";
             // 二级分类
             $two_category=Db::query($sql);
             if (!empty($two_category)) {
