@@ -1,17 +1,15 @@
 <?php
 /**
- * 公共函数文件
- * @author fengyue <email@email.com>
+ * tpshop
+ * ============================================================================
+ * * 版权所有 2015-2027 深圳搜豹网络科技有限公司，并保留所有权利。
+ * 网站地址: http://www.tp-shop.cn
+ * ----------------------------------------------------------------------------
+ * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用 .
+ * 不允许对程序代码以任何形式任何目的的再发布。
+ * 采用最新Thinkphp5助手函数特性实现单字母函数M D U等简写方式
+ * $Author: IT宇宙人 2015-08-10 $
  */
-
-// 应用公共文件
-require 'application/common/common.php';
-<<<<<<< HEAD
-require APP_PATH.'function.php';
-
-// 忽略E_WARNING错误
-error_reporting(E_ERROR | E_PARSE );
-
 use think\Log;
 use think\Db;
 define('EXTEND_MODULE', 1);
@@ -82,7 +80,7 @@ function getGoodsSpecImg($goods_id,$item_id){
  * @param type $height    生成缩略图的高度
  * @param type $item_id   规格id
  */
-function goods_thumb_images($goods_id, $width, $height,$item_id=0)
+function goods_thum_images($goods_id, $width, $height,$item_id=0)
 {
 
     if (empty($goods_id)) return '';
@@ -106,7 +104,7 @@ function goods_thumb_images($goods_id, $width, $height,$item_id=0)
 
 
     if (empty($original_img)) {
-        return '/static/common/images/icon_goods_thumb_empty_300.png';
+        return '/public/images/icon_goods_thumb_empty_300.png';
     }
     
     if(tpCache('oss.oss_switch')){
@@ -1522,9 +1520,3 @@ function orderExresperMent($order_info = array(),$des='',$order_id=''){
       }
       
 }
-
-
-
-=======
-error_reporting(E_ERROR | E_PARSE );
->>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9

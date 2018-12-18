@@ -277,7 +277,7 @@
         }else{
             $.ajax({
                 type: "Post",
-                url: "{:url('Home/Cart/addCombination')}",
+                url: "{:U('Home/Cart/addCombination')}",
                 data: {combination_id: combination_id, combination_goods: arr,num:1},
                 dataType: "json",
                 success: function (data) {

@@ -1,25 +1,23 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{$goods.goods_name}</title>
+    <title>{$goods.goods_name}-{$tpshop_config['shop_info_store_name']}</title>
     <meta name="keywords" content="{$goods.keywords}"/>
-    <meta name="description" content="{$goods.goods_brief}"/>
-    <link rel="stylesheet" type="text/css" href="__HOME__/css/tpshop.css"/>
-    <link rel="stylesheet" type="text/css" href="__HOME__/css/jquery.jqzoom.css">
-
-    <script src="__HOME__/js/jquery-1.11.3.min.js" ></script>
-    <script src="__HOME__/js/move.js" ></script>
-    <script src="__COMMON__/plugins/layer/layer.js"></script>
-    <script src="__HOME__/js/jquery.jqzoom.js"></script>
-    <script src="__COMMON__/js/global.js"></script>
-    <script src="__COMMON__/js/pc_common.js"></script>
-    <link rel="stylesheet" href="__HOME__/css/location.css" type="text/css"><!-- 收货地址，物流运费 -->
+    <meta name="description" content="{$goods.goods_remark}"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/jquery.jqzoom.css">
+    <script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__STATIC__/js/move.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/layer/layer-min.js"></script>
+    <script type="text/javascript" src="__STATIC__/js/jquery.jqzoom.js"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    <link rel="stylesheet" href="__STATIC__/css/location.css" type="text/css"><!-- 收货地址，物流运费 -->
     <link rel="shortcut icon" type="image/x-icon"
           href="{$tpshop_config.shop_info_store_ico|default='/public/static/images/logo/storeico_default.png'}"
           media="screen"/>
-   
+    <link rel="stylesheet" href="http://{$tpshop_config.basic_im_website}/static/test/common/layui/css/layui.css" media="all">
 </head>
 <body>
 <!--header-s-->
@@ -28,7 +26,15 @@
 <div class="search-box p">
     <div class="w1224">
         <div class="search-path fl">
-            当前位置：<span><a href="#" class="godos_details_font">首页</a></span> > {$breadcrumb|raw} > <span class="active">{$goods.goods_name}</span>
+            <volist name="goods['goods_category']['parent_list']" id="category_parent">
+                <a href="{:U('/Home/Goods/goodsList',array('id'=>$category_parent['id']))}">{$category_parent['name']}</a>
+                <i class="litt-xyb"></i>
+            </volist>
+            <a href="{:U('/Home/Goods/goodsList',array('id'=>$goods['goods_category']['id']))}">{$goods['goods_category']['name']}</a>
+            <i class="litt-xyb"></i>
+            <div class="havedox">
+                <span>{$goods.goods_name} </span>
+            </div>
         </div>
 
         <if condition="(!empty($tpshop_config['basic_im_choose'])) && ($tpshop_config['basic_im_choose'] eq 1)">
@@ -76,8 +82,8 @@
                     <i class="video-play"></i>
                     <!-- 商品大图介绍 start [[-->
                     <div class="product-img jqzoom">
-                        <img id="zoomimg" src="{$goods.goods_id|goods_thumb_images=400,400}"
-                             jqimg="{$goods.goods_id|goods_thumb_images=800,800}">
+                        <img id="zoomimg" src="{$goods.goods_id|goods_thum_images=400,400}"
+                             jqimg="{$goods.goods_id|goods_thum_images=800,800}">
                     </div>
                     <!-- 商品大图介绍 end ]]-->
                     <!-- 商品小图介绍 start [[-->
@@ -107,7 +113,59 @@
                     <!--<a href="javascript:void(0);" id="collectLink"><i class="collect-ico collect-ico-ok"></i>已收藏<em class="J_FavCount">(20)</em></a>-->
                 </div>
                 <!-- 分享商品 -->
-               
+                <div class="share">
+                    <div class="jiathis_style">
+                        <div class="bdsharebuttonbox">
+                            <a href="#" class="bds_more" data-cmd="more"></a>
+                            <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+                            <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+                            <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+                            <a href="#" class="bds_renren" data-cmd="renren"></a>
+                            <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+                        </div>
+                    </div>
+                    <script>
+                        var bd_url = "http://{$_SERVER[HTTP_HOST]}/index.php?m=Home&c=Goods&a=goodsInfo&id={$_GET[id]}";
+                        var bd_pic = "http://{$_SERVER[HTTP_HOST]}{$goods[goods_id]|goods_thum_images=400,400}";
+                        var bdText = "{$goods.goods_name}";
+                        var is_distribut = getCookie('is_distribut');
+                        var user_id = getCookie('user_id');
+                        // 如果已经登录了, 并且是分销商
+                        if (parseInt(is_distribut) == 1 && parseInt(user_id) > 0) {
+                            bd_url = bd_url + "&first_leader=" + user_id;
+                        }
+
+                        function setShareConfig(id, config) {
+                            config.bdUrl = bd_url;
+                            config.bdPic = bd_pic;
+                            config.bdText = bdText;
+                            return config;
+                        }
+
+                        window._bd_share_config = {
+                            "common": {
+                                onBeforeClick: setShareConfig,
+                                "bdSnsKey": {},
+                                "bdText": "",
+                                "bdMini": "2",
+                                "bdPic": "",
+                                "bdStyle": "0",
+                                "bdSize": "16"
+                            },
+                            "share": {},
+                            "image": {
+                                "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+                                "viewText": "分享到：",
+                                "viewSize": "16"
+                            },
+                            "selectShare": {
+                                "bdContainerClass": null,
+                                "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+                            }
+                        };
+                        with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+                    </script>
+                </div>
             </div>
         </div>
         <form id="buy_goods_form" name="buy_goods_form" method="post" action="">
@@ -135,7 +193,7 @@
             <div class="detail-ggsl">
                 <h1>{$goods.goods_name}</h1>
                 <!--<p class="detail-ggsl-p" style="display: none;" ><a href="">【首批售罄 7月20日10点再次开售，已购买的用户到货时间咨询客服】曲面全景屏、隐藏式摄像头 、骁龙845...</a></p>-->
-                <p class="detail-ggsl-p" ><a href="">{$goods['goods_brief']}</a></p>
+                <p class="detail-ggsl-p" ><a href="">{$goods['goods_remark']}</a></p>
                 <div class="presale-time" style="display: none">
                     <div class="pre-icon fl">
                         <span class="ys" style="display: inline-block;"><i class="detai-ico"></i><span id="activity_type" style="display: inline-block; margin-top: -5px;">抢购活动</span></span>
@@ -175,10 +233,10 @@
                                 <span class="mobile-buy-cheap">
                                     手机购买更便宜
                                     <i>
-                                    <img class="small-qrcode-h" src="/static/home/images/qrcode.png"
+                                    <img class="small-qrcode-h" src="/template/pc/rainbow/static/images/qrcode.png"
                                          alt=""/>
                                     <img class="big-qrcode-h"
-                                         img-url="/index.php?m=Home&c=Index&a=qr_code&data={:url('Mobile/Goods/goodsInfo',['id'=>$goods['goods_id']],true,true)}&head_pic={$head_pic}&back_img={$back_img}"
+                                         img-url="/index.php?m=Home&c=Index&a=qr_code&data={:U('Mobile/Goods/goodsInfo',['id'=>$goods['goods_id']],true,true)}&head_pic={$head_pic}&back_img={$back_img}"
                                          alt=""/>
                                     </i>
                                 </span>
@@ -199,10 +257,10 @@
                     </div>
                     <div class="shop-cou-ri">
                         <div class="allcomm"><p>累计评价</p>
-                            <p class="f_blue">0</p></div>
+                            <p class="f_blue">{$goods['comment_count']}</p></div>
                         <div class="br1"></div>
                         <div class="allcomm"><p>累计销量</p>
-                            <p class="f_blue">0</p></div>
+                            <p class="f_blue">{$goods['sales_sum']+$goods['virtual_sales_sum']}</p></div>
                     </div>
                 </div>
                 <if condition="$goods[is_virtual] eq 0">
@@ -225,8 +283,8 @@
                                 </div>
                             </li>
                         </ul>
-                        <script src="__HOME__/js/locationJson.js"></script>
-                        <script src="__HOME__/js/location.js"></script>
+                        <script src="__PUBLIC__/js/locationJson.js"></script>
+                        <script src="__STATIC__/js/location.js"></script>
                         <!-- 收货地址，物流运费 -end-->
                     </div>
                 </if>
@@ -237,14 +295,14 @@
                         </li>
                     </ul>
                 </div>
-                
-                <div class="standard p">
-                    <ul>
-                        <li class="jaj"><span>品&nbsp;&nbsp;牌：</span></li>
-                        <li class="lawir"><span class="service">{$goods['brand_name']}</span></li>
-                    </ul>
-                </div>
-                
+                <notempty name="$goods['brand']">
+                    <div class="standard p">
+                        <ul>
+                            <li class="jaj"><span>品&nbsp;&nbsp;牌：</span></li>
+                            <li class="lawir"><span class="service">{$goods['brand']['name']}</span></li>
+                        </ul>
+                    </div>
+                </notempty>
                 <if condition="$goods['is_virtual'] eq 0 and $goods['exchange_integral'] gt 0">
                     <div class="standard p">
                         <ul>
@@ -256,22 +314,19 @@
                     </div>
                 </if>
                 <!-- 规格 start [[-->
-                <volist name="spec_data" id="spec">
+                <volist name="goods['spec']" id="spec">
                     <div class="spec_goods_price_div standard p">
                         <ul>
                             <li class="jaj"><span>{$spec['name']}：</span></li>
                             <li class="lawir colo">
-                                <volist name="spec['children']" id="spec_item">
+                                <volist name="spec['spec_item']" id="spec_item">
                                     <input type="radio" hidden id="goods_spec_{$spec_item['id']}" name="goods_spec[{$spec['name']}]" value="{$spec_item['id']}"/>
                                     <a id="goods_spec_a_{$spec_item['id']}" class="spec_item">
-                                        <if condition="goods['spec_image']">
-                                            <volist name="goods['spec_image']" id="spec_image">
-                                                <if condition="$spec_image['spec_image_id'] eq $spec_item['id']  and $spec_image['src'] neq ''">
-                                                    <img src="{$spec_image['src']}" style="width: 40px;height: 40px;"/>
-                                                </if>
-                                            </volist>
-                                        </if>
-                                        
+                                        <volist name="goods['spec_image']" id="spec_image">
+                                            <if condition="$spec_image['spec_image_id'] eq $spec_item['id']  and $spec_image['src'] neq ''">
+                                                <img src="{$spec_image['src']}" style="width: 40px;height: 40px;"/>
+                                            </if>
+                                        </volist>
                                         {$spec_item['item']}
                                     </a>
                                 </volist>
@@ -290,12 +345,7 @@
                                        onblur="altergoodsnum(0)" max=""/>
                                 <a class="add" href="javascript:void(0);" onclick="altergoodsnum(1)">+</a>
                             </div>
-                            <div class="sav_shop">
-                                <if condition="!$goods.stock"><b>已售罄</b>
-                                <else />库存：<span id="spec_store_count">{$goods['stock']}</span> 
-                                </if>
-                             
-                            </div>
+                            <div class="sav_shop"><empty name="goods.store_count"><b>已售罄</b><else />库存：<span id="spec_store_count">{$goods['store_count']}</span> </empty></div>
                         </li>
                     </ul>
                 </div>
@@ -362,11 +412,10 @@
     </div>
 </div>
 <!--搭配购组合套餐 s-->
-
+<include file="goods/goodsInfoCombination"/>
 <!--搭配购组合套餐 e-->
 <div class="detail-main p">
     <div class="w1224">
-        <!-- 推荐 -->
         <div class="deta-le-ma">
             <div class="type_more">
                 <div class="type-top">
@@ -375,7 +424,7 @@
                 <div class="type-bot">
                     <ul class="xg_typ">
                         <foreach name="tpshop_config.hot_keywords" item="wd" key="k">
-                            <li><a href="{:url('Home/Goods/search',array('q'=>$wd))}">{$wd}</a></li>
+                            <li><a href="{:U('Home/Goods/search',array('q'=>$wd))}">{$wd}</a></li>
                         </foreach>
                     </ul>
                 </div>
@@ -388,9 +437,9 @@
                     <tpshop sql="select goods_id,goods_name,shop_price from __PREFIX__goods where is_recommend=1 and is_on_sale = 1 order by goods_id desc limit 10"
                             item="vo" key="k">
                         <div class="alone-shop">
-                            <a href="{:url('Home/Goods/goodsInfo',array('id'=>$vo[goods_id]))}"><img
-                                    src="{$vo.goods_id|goods_thumb_images=206,206}" style="display: inline;"></a>
-                            <p class="line-two-hidd"><a href="{:url('Home/Goods/goodsInfo',array('id'=>$vo[goods_id]))}">{$vo.goods_name|getSubstr=0,30}</a>
+                            <a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo[goods_id]))}"><img
+                                    src="{$vo.goods_id|goods_thum_images=206,206}" style="display: inline;"></a>
+                            <p class="line-two-hidd"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$vo[goods_id]))}">{$vo.goods_name|getSubstr=0,30}</a>
                             </p>
                             <p class="price-tag"><span class="li_xfo">￥</span><span>{$vo.shop_price}</span></p>
                             <!--<p class="store-alone"><a href="">恒要达食品专享店</a></p>-->
@@ -399,11 +448,9 @@
                 </div>
             </div>
         </div>
-        <!-- 商品详情 -->
         <include file="goods/goodsInfoDetail"/>
     </div>
 </div>
-
 <script type="text/javascript">
     //	商品详情页 滚动到一定位置固定定位
     $(window).scroll(function () {
@@ -430,10 +477,10 @@
     <tpshop sql="select goods_id,goods_name,shop_price from `__PREFIX__goods` where goods_id != $goods[goods_id] AND cat_id = $goods[cat_id] AND is_on_sale = 1 limit 12" item="look" key="k">
         <div class="tjhot-shoplist type-bot">
             <div class="alone-shop">
-                <a href="{:url('Home/Goods/goodsInfo',array('id'=>$look[goods_id]))}">
-                    <img class="wiahides"src="{$look.goods_id|goods_thumb_images=206,206}" style="display: inline;"></a>
+                <a href="{:U('Home/Goods/goodsInfo',array('id'=>$look[goods_id]))}">
+                    <img class="wiahides"src="{$look.goods_id|goods_thum_images=206,206}" style="display: inline;"></a>
                 <p class="shop_name2">
-                    <a href="{:url('Home/Goods/goodsInfo',array('id'=>$look[goods_id]))}">{$look.goods_name}</a>
+                    <a href="{:U('Home/Goods/goodsInfo',array('id'=>$look[goods_id]))}">{$look.goods_name}</a>
                 </p>
                 <p class="price-tag">
                     <span class="li_xfo">￥</span><span>{$look.shop_price}</span>
@@ -537,8 +584,8 @@
             if (is_virtual == 1) {
                 var virtual_limit = parseInt($('#virtual_limit').val());
                 if ((goods_num <= store_count && goods_num <= virtual_limit) || (goods_num < store_count && virtual_limit == 0)) {
-                   form.attr('action', "{:url('Home/Cart/cart2',['action'=>'buy_now'])}").submit();
-                    // form.attr('action', "{:url('Home/Virtual/buy_virtual')}").submit();//之前的跳转虚拟订单跳转页
+                   form.attr('action', "{:U('Home/Cart/cart2',['action'=>'buy_now'])}").submit();
+                    // form.attr('action', "{:U('Home/Virtual/buy_virtual')}").submit();//之前的跳转虚拟订单跳转页
                 } else {
                     layer.msg('购买数量超过此商品购买上限', {icon: 3});
                 }
@@ -549,12 +596,12 @@
                 return;
             }
             if(goods_prom_type == 4 && activity_is_on == 1){
-                form.attr('action', "{:url('Home/Cart/pre_sell')}").submit();
+                form.attr('action', "{:U('Home/Cart/pre_sell')}").submit();
                 return;
             }
             //普通流程
             if (goods_num <= store_count) {
-                form.attr('action', "{:url('Home/Cart/cart2',['action'=>'buy_now'])}").submit();
+                form.attr('action', "{:U('Home/Cart/cart2',['action'=>'buy_now'])}").submit();
             } else {
                 layer.msg('购买数量超过此商品购买上限', {icon: 3});
             }
@@ -745,7 +792,7 @@
             type: 'post',
             dataType: 'json',
             data: {goods_id: goods_id, item_id: item_id, goods_num: goods_num},
-            url: "{:url('Home/Goods/activity')}",
+            url: "{:U('Home/Goods/activity')}",
             success: function (data) {
                 if (data.status == 1) {
                     $('input[name="goods_prom_type"]').attr('value', data.result.goods.prom_type);//商品活动类型
@@ -1033,7 +1080,7 @@
                 type: 'post',
                 dataType: 'json',
                 data: {goods_ids: goods_arr},
-                url: "{:url('Home/Goods/collect_goods')}",
+                url: "{:U('Home/Goods/collect_goods')}",
                 success: function (res) {
                     if (res.status == 1) {
                         layer.msg(res.msg, {icon: 1});
@@ -1074,280 +1121,3 @@
 </style>
 </body>
 </html>
-=======
-<extend name="Public/indexEdit" />
-<block name="content">
-
-  <link rel="stylesheet" href="__HOME__/css/toastr.min.css" />
-  <link rel="stylesheet" href="__HOME__/css/page.css" />
-  <!--当前位置-->
-  <!--当前位置-->
-  <div class="paper-current-main w">
-
-    当前位置：<span><a href="#" class="godos_details_font">首页</a></span> > {$breadcrumb|raw} > <span class="active">{$result.goods_name}</span>
-  </div>
-  <!--内容-->
-  <!--内容-->
-  <div class="productDeta-main w clearfix">
-    <!--查看商品-->
-    <div class="procDetailInner clearfix">
-      <div class="procDeta-fl fl">
-        <div class="preview">
-          <div id="vertical" class="bigImg">
-            <img width="400" height="400" alt="" id="midimg" data-original='' src='<if condition="isset($goods_images)">{$goods_images[0]['image_url']}</if>' />
-              
-            <div style="display:none;" id="winSelector"></div>
-          </div>
-          <if condition="!empty($goods_images)">
-            <div class="smallImg">
-
-              <div class="scrollbutton smallImgUp disabled"></div>
-              <div id="imageMenu">
-                <ul>
-                  <foreach name="goods_images" key="key" item="value">
-                    <li <if condition="$key === 0"> id="onlickImg"</if> >
-          
-                  <img src="{$value.image_url}" width="68" height="68"></li>
-          </foreach>
-          </ul>
-        </div>
-        <div class="scrollbutton smallImgDown"></div>
-      </div>
-      </if>
-      <div id="bigView" style="display:none;"><img width="889" height="889" src=""></div>
-    </div>
-    <div class="clearfix product-inf">
-
-      <span class="fl">产品编码:{$result.goods_sn}</span>
-      <a href="{:url('collection/collection')}" data-id="{$result.goods_id}" class="fr collection clearfix" onclick="return false;"
-        id="collection_btn">
-        <i class="fl"></i>
-        <span class="fl">收藏商品</span>
-      </a>
-      <div class="bshare-custom fr" style="margin-top: 3px;">
-        <a href="javascript:;" class="fr share clearfix" style="padding-left: 0px;">
-          <span class="fl">分享<a title="更多平台" class="bshare-more bshare-more-icon more-style-sharethis fl"></a>
-            <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/buttonLite.js#style=-1&amp;uuid=&amp;pophcol=2&amp;lang=zh"></script>
-            <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/bshareC0.js"></script></span>
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="procDeta-fr fl">
-    <h5 class="pr-title">{$result.goods_name}</h5>
-    <div class="pr-price">
-      <p class="pr-price-top">商品价格：<span>￥<i>
-            <if condition="!empty($_SESSION['user_id'])">{:sprintf("%01.2f",$result.member_price)}
-              <!-- 活动价格 -->
-              <elseif condition="!empty($result.is_shelves)" />{$result.shop_price}
-              <!-- 未登录价格 -->
-              <else />{$result.shop_price}
-            </if>
-          </i> </span></p>
-      {$giftHtml}
-      {$countHtml}
-      <p class="pr-price-bottom clearfix">
-        <span class="fl">商城APP手机购买更便宜：</span>
-        <span class="fl clearfix code-move">
-          <i class="fl"></i>
-          <em class="fl"></em>
-          <img src="{$init_qr_code}" width="100" height="100" class="code-up">
-        </span>
-        <span class="fr">送积分：{$result.integral}</span>
-      </p>
-    </div>
-    <div class="promotion-main">
-      <div class="promotion-fr fl" id="main">
-        <if condition="!empty($promotionInformation)">
-          <div class="pr-information">
-            <h5 class="fl">促销信息：</h5>
-            <p class="clearfix">
-              <em class="fl">{$promotionInformation['promotion']}</em>
-              <span class="fl">{$promotionInformation['discount']}</span>
-              <a href="javascript:;" class="fl">立即参加</a>
-            </p>
-            <p class="clearfix margin">
-          </div>
-        </if>
-
-        <if condition="!empty($spec_data)">
-          <foreach name="spec_data" key="key" item="item">
-            <div class="pr-sps clearfix spec" style="width: 700px">
-              <h5 class="fl" value="{$item['id']}">{$item['name']}：</h5>
-              <div class="fl" style="width: 600px">
-                <if condition="!empty($item['children'])">
-                  <foreach name="item['children']" key="itemKey" item="value">
-                    <span style="display: inline-block" class='<if condition="false!==in_array($value.id,$spec_key)">active</if>'
-                      value="{$value['id']}" >
-                      {$value.item|raw}
-                    </span>
-
-                  </foreach>
-                </if>
-              </div>
-
-            </div>
-          </foreach>
-        </if>
-        <div class="pr-quantity clearfix">
-          <h5 class="fl">购买数量：</h5>
-          <div class="choice fl">
-            <a href="javascript:;" class="fl">-</a>
-            <input id="goodsNum" type="text" class="fl" value="1">
-            <a href="javascript:;" class="fl">+</a>
-          </div>
-          <div class="fl">
-            {$result.stock}
-          </div>
-        </div>
-
-        <div class="pr-button">
-          <form action="{$requstURL}" method="post">
-            <input type="hidden" value="{$result.goods_id}" name="goods_id">
-            <input type="hidden" value="" name="formId">
-            <input type="hidden" value="1" name="goods_num">
-            <input tyoe="hidden" value="{$gift_id}" name="gift_id">
-            <input type="hidden" value="{$result.member_price}" name="price_new">
-            <!-- <input type="hidden"  name="ware_id" value="{ $default[$sendModel::$id_d] }"/> -->
-            <input type="button" onclick="Cart.newAddCart(this, 'goodsNum', '{:url('Cart/new_cart_add')}')" value="加入购物车"
-              class="join">
-            <input type="submit" value="立即购买" class="collection">
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
-  <!--商品-->
-  <!-- <div class="pr-commodity" id="goods_recommend">
-
-  </div> -->
-  <!--商品评论-->
-  <div class="eva-comment">
-    <div class="productDetaLeft fl" id="bestSelling">
-      <!-- 自己添加的 -->
-      <div class="categoryOne">
-        <h2>
-          <i></i>本店搜索
-        </h2>
-        <div>
-          <form action="/index.php/Home/Product/ProductList.html" method="get">
-
-
-            <p class="clearfix one">
-              <span class="fl">关键字&nbsp;&nbsp;</span> <input type="text" class="fl" name="keyword">
-            </p>
-            <p class="clearfix two">
-              <span class="fl">价格&nbsp;&nbsp;</span>
-              <i class="fl">￥<input type="text" name="begin_price" value=""></i>
-              <i class="fl">￥<input type="text" name="end_price" value=""></i>
-              <input type="hidden" name="show" value="show" />
-            </p>
-            <p class="three">
-              <input type="submit" value="搜&nbsp;索" class="btn product-search">
-            </p>
-          </form>
-        </div>
-      </div>
-      <!-- <dl class="proTop10">
-        <dt>
-          <i></i>畅销排行Top10
-        </dt>
-        <dd class="top10Item">
-          <a href="/index.php/Home/Goods/goodsDetails/id/3357.html">
-            <div class="img-parent fl">
-              <img src="/Uploads/goods/2017-06-30/5955f2cb9eb99.jpg" height="80" width="80"> <span>1</span>
-            </div>
-            <div class="top10Item-fr fl">
-              <p>海尔（Haier) EG8012B39SU1 8公斤变频滚筒洗衣机110 EG8012B39SU1 8公斤变频滚筒洗衣机 台</p>
-              <p>海尔（Haier) EG8012B39SU1 8公斤变频滚筒洗衣机</p>
-              <span>¥0.01</span>
-            </div>
-          </a>
-        </dd>
-      </dl> -->
-    </div>
-
-    <!--商品介绍记录-->
-    <div class="productDetafr fr">
-      <ul class="prod-title clearfix">
-        <li class="fl active">商品介绍</li>
-        <li class="fl">商品评价<span>&nbsp;{$comment_number|default=0}</span></li>
-        <li class="fl">商品咨询<span>&nbsp;</span></li>
-      </ul>
-      <!--介绍-->
-      <dl class="pro-comment active">
-        <dt class="clearfix">
-          <ol class="fl three">
-            <li>品牌：{$result.brand_name} </li>
-            <li>产品简介：{$result.goods_brief}</li>
-            <if condition="$goods_attrs">
-              <foreach name="$goods_attrs" item="attr">
-                <li>{$attr['attr_name']} : {$attr['attr_value']}</li>
-              </foreach>
-            </if>
-
-          </ol>
-        </dt>
-        <dd class="introduce">
-          {$result.goods_desc|raw}
-        </dd>
-      </dl>
-      <!--评价-->
-      <div class="pro-comment">
-
-        <div class="comment-parentNode" id="comment">
-
-        </div>
-      </div>
-      <!--咨询-->
-      <dl class="pro-comment" id="Consultation">
-
-      </dl>
-      <!--最近浏览-->
-      <div class="guessYouLike clearfix" id="guess">
-
-      </div>
-    </div>
-  </div>
-  </div>
-  </div>
-  <include file="Public/rightHtml" />
-
-  <script type="text/javascript" src="__HOME__/js/evaluate.js"></script>
-
-  <script type="text/javascript" src="__HOME__/js/expansion.js"></script>
-  <script type="text/javascript" src="__COMMON__/js/alert.js"></script>
-  <script type="text/javascript" src="__COMMON__/js/cookie.js"></script>
-  <script type="text/javascript" src="__HOME__/js/toastr.min.js"></script>
-  <script type="text/javascript" src="__HOME__/js/goods/cart.js"></script>
-  <script type="text/javascript" src="__HOME__/js/goods/goods.js"></script>
-  <script type="text/javascript">
-   
-    GoodsObj.value = {:json_encode($spec_goods_price) };
-    GoodsObj.connectUrl = "{:url('ajaxGetGuessLove')}";
-    GoodsObj.goodsId = {$result['goods_id']};
-    var REC_URL = "{:url('bestSelling')}";
-    var CON_URL = "{:url('ajaxGetGoodsConsulation')}";
-    var COMMENT_URL = "{:url('ajaxGetGoodsComment')}";
-    var RECOMMEND_URL = "{:url('ajaxGetGoodsRecommend')}";
-    $('.procDetailInner .procDeta-fr .pr-price .pr-price-bottom .code-move').hover(function () {
-      $(this).find('.code-up').stop().fadeIn();
-    }, function () {
-      $(this).find('.code-up').stop().fadeOut();
-    })
-  </script>
-  <script>
-    $(document).ready(function () {
-      $('.gift_hidden').css('display', 'none');
-    })
-    $('.gift_price').mouseover(function () {
-      $('.gift_hidden').css('display', 'inline');
-    })
-    $('.gift_price').mouseout(function () {
-      $('.gift_hidden').css('display', 'none');
-    })
-  </script>
-
-</block>
->>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
