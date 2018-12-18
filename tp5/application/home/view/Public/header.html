@@ -1,0 +1,255 @@
+<link rel="stylesheet" type="text/css" href="__HOME__/css/base.css" />
+<link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config.shop_info_store_ico|default='/public/static/images/logo/storeico_default.png'}"
+  media="screen" />
+<div class="tpshop-tm-hander">
+  <div class="top-hander">
+    <!-- Include标签支持在包含文件的同时传入参数 w是传过来的参数 -->
+    <div class="[w] pr clearfix">
+      <div class="fl">
+        <if condition="strtolower($Request.action) neq 'goodsinfo' ">
+          <link rel="stylesheet" href="__HOME__/css/location.css" type="text/css"><!-- 收货地址，物流运费 -->
+          <div class="sendaddress pr fl">
+            <span>送货至：</span>
+            <!-- <span>深圳<i class="share-a_a1"></i></span>-->
+            <span>
+              <ul class="list1">
+                <li class="summary-stock though-line">
+                  <div class="dd" style="border-right:0px;width:200px;">
+                    <div class="store-selector add_cj_p">
+                      <div class="text">
+                        <div></div><b></b>
+                      </div>
+                      <div onclick="$(this).parent().removeClass('hover')" class="close"></div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </span>
+          </div>
+          <script src="__COMMON__/js/locationJson.js"></script>
+          <script src="__HOME__/js/location.js"></script>
+          <script>doInitRegion();</script>
+        </if>
+        <div class="fl nologin">
+          <a class="red" href="{:url('Home/user/login')}">登录</a>
+          <a href="{:url('Home/user/reg')}">注册</a>
+        </div>
+        <div class="fl islogin hide">
+          <a class="red userinfo" href="{:url('Home/user/index')}"></a>
+          <a href="{:url('Home/user/logout')}" title="退出" target="_self">安全退出</a>
+        </div>
+      </div>
+      <ul class="top-ri-header fr clearfix">
+        <li><a target="_blank" href="{:url('Home/Order/order_list')}">我的订单</a></li>
+        <li class="spacer"></li>
+        <li><a target="_blank" href="{:url('Home/User/visit_log')}">我的浏览</a></li>
+        <li class="spacer"></li>
+        <li><a target="_blank" href="{:url('Home/User/goods_collect')}">我的收藏</a></li>
+        <li class="spacer"></li>
+        <li><a target="_blank" href="http://help.tp-shop.cn/Index/Help/channel/cat_id/5.html">帮助中心</a></li>
+        <li class="spacer"></li>
+        <li class="hover-ba-navdh">
+          <div class="nav-dh">
+            <span>网站导航</span>
+            <i class="share-a_a1"></i>
+          </div>
+          <ul class="conta-hv-nav clearfix">
+            <li>
+              <a href="{:url('Home/Activity/promoteList')}">优惠活动</a>
+            </li>
+            <li>
+              <a href="{:url('Home/Activity/pre_sell_list')}">预售活动</a>
+            </li>
+            <!--<li>
+                            <a href="{:url('Home/Goods/integralMall')}">拍卖活动</a>
+                        </li>-->
+            <li>
+              <a href="{:url('Home/Goods/integralMall')}">兑换中心</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="nav-middan-z [w] clearfix">
+    <a class="ecsc-logo" href="{:url('Home/index/index')}">
+      <img src="{$tpshop_config.shop_info_store_logo|default='/public/static/images/logo/pc_home_logo_default.png'}" />
+    </a>
+    <div class="ecsc-search">
+      <!-- 搜索框 -->
+      <form id="searchForm" name="" method="get" action="{:url('Home/Goods/search')}" class="ecsc-search-form">
+        <input autocomplete="off" name="q" id="q" type="text" value="{$Request.param.q}" class="ecsc-search-input"
+          placeholder="请输入搜索关键字...">
+        <button type="submit" class="ecsc-search-button">搜索</button>
+        <div class="candidate p">
+          <ul id="search_list"></ul>
+        </div>
+        <script type="text/javascript">
+          ; (function ($) {
+            $.fn.extend({
+              donetyping: function (callback, timeout) {
+                timeout = timeout || 1e3;
+                var timeoutReference,
+                  doneTyping = function (el) {
+                    if (!timeoutReference) return;
+                    timeoutReference = null;
+                    callback.call(el);
+                  };
+                return this.each(function (i, el) {
+                  var $el = $(el);
+                  $el.is(':input') && $el.on('keyup keypress', function (e) {
+                    if (e.type == 'keyup' && e.keyCode != 8) return;
+                    if (timeoutReference) clearTimeout(timeoutReference);
+                    timeoutReference = setTimeout(function () {
+                      doneTyping(el);
+                    }, timeout);
+                  }).on('blur', function () {
+                    doneTyping(el);
+                  });
+                });
+              }
+            });
+          })(jQuery);
+
+          $('.ecsc-search-input').donetyping(function () {
+            search_key();
+          }, 500).focus(function () {
+            var search_key = $.trim($('#q').val());
+            if (search_key != '') {
+              $('.candidate').show();
+            }
+          });
+          $('.candidate').mouseleave(function () {
+            $(this).hide();
+          });
+
+          function searchWord(words) {
+            $('#q').val(words);
+            $('#searchForm').submit();
+          }
+          function search_key() {
+            var search_key = $.trim($('#q').val());
+            if (search_key != '') {
+              $.ajax({
+                type: 'post',
+                dataType: 'json',
+                data: { key: search_key },
+                url: "{:url('Home/Api/searchKey')}",
+                success: function (data) {
+                  if (data.status == 1) {
+                    var html = '';
+                    $.each(data.result, function (n, value) {
+                      html += '<li onclick="searchWord(\'' + value.keywords + '\');"><div class="search-item">' + value.keywords + '</div><div class="search-count">约' + value.goods_num + '个商品</div></li>';
+                    });
+                    html += '<li class="close"><div class="search-count">关闭</div></li>';
+                    $('#search_list').empty().append(html);
+                    $('.candidate').show();
+                  } else {
+                    $('#search_list').empty();
+                  }
+                }
+              });
+            }
+          }
+        </script>
+      </form>
+      <!-- 搜索的热词 -->
+      <div class="keyword clearfix">
+        <foreach name="hot_words" item="item" key="k">
+          <a class="key-item" href="{:url('Home/Goods/search',array('q'=>$wd))}" target="_blank">{$item.hot_words}</a>
+        </foreach>
+      </div>
+    </div>
+    <div class="u-g-cart fr" id="hd-my-cart">
+      <a href="{:url('Home/Cart/index')}">
+        <div class="c-n fl">
+          <i class="share-shopcar-index"></i>
+          <span>我的购物车</span>
+          <em class="shop-nums" id="cart_quantity"></em>
+        </div>
+      </a>
+      <div class="u-fn-cart" id="show_minicart">
+        <div class="minicartContent" id="minicart">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="nav [w] clearfix">
+    <div class="categorys home_categorys">
+      <div class="dt">
+        <a href="" target="_blank"><i class="share-a_a2"></i>全部商品分类</a>
+      </div>
+      <!--全部商品分类-s-->
+      <div class="dd">
+        <div class="cata-nav" id="cata-nav">
+          <foreach name="goods_categories" item="top_cat">
+            
+            <eq name="top_cat.parent_id" value="0">
+              <!-- 这是一级分类 -->
+              <div class="item-left">
+                <h3 class="cata-nav-name">
+                  <div class="cata-nav-wrap">
+                    <i class="ico ico-nav-0"></i>
+                    <a href="{:url('Home/Goods/goodsList',array('id'=>$v))}">{$top_cat['cat_name']}</a>
+                  </div>
+                  <!--<a href="" >手机店</a>-->
+                </h3>
+
+                <!-- 获取一级分类下的二级分类 -->
+                <div class="cata-nav-layer">
+                    <div class="cata-nav-left">
+                        <div class="subitems">
+                            <foreach name="goods_categories" item="second_cat">
+                                <!-- 二级分类的父分类等于一级分类 -->
+                                <eq name="second_cat.parent_id" value="$top_cat.cat_id">
+                                    <dl class="clearfix">
+                                        <dt class="fl">
+                                            <a href="{:url('Product/ProductList',['cid'=>$second_cat['cat_id']])}">{$second_cat.cat_name}&nbsp;<b>></b></a>
+                                        </dt>
+                                        <dd class="fl clearfix">
+                                            <foreach name="goods_categories" item="third_cat">
+                                                <eq name="third_cat.parent_id" value="$second_cat.cat_id">
+                                                        <a href="{:url('Product/ProductList',['cid'=>$third_cat['cat_id']])}" class="fl">
+                                                            {$third_cat.cat_name}
+                                                        </a>
+                                                </eq>
+                                            </foreach>
+                                        </dd>
+                                    </dl>
+                                </eq>
+                            </foreach>
+                        </div>
+                        
+                    </div>
+                </div>
+              </div>
+            </eq>
+          </foreach>
+        </div>
+
+
+
+
+        
+        <script>
+          $('#cata-nav').find('.item').hover(function () {
+            $(this).addClass('nav-active').siblings().removeClass('nav-active');
+          }, function () {
+            $(this).removeClass('nav-active');
+          })
+        </script>
+      </div>
+      <!--全部商品分类-e-->
+    </div>
+    <ul class="navitems clearfix" id="navitems">
+      <li><a href="{:url('Index/index')}">首页</a></li>
+      <foreach name="nav_data" item="v">
+          <li class="selected">
+              <a href="#" >{$v['hot_words']}</a>
+          </li>
+      </foreach>
+      
+      
+    </ul>
+  </div>
+</div>

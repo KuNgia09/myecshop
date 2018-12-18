@@ -33,7 +33,11 @@ user-select:none;
 .t-r{text-align:right;}
 .ellipsis-1{overflow:hidden;white-space:nowrap;word-wrap:normal;-o-text-overflow:ellipsis;text-overflow:ellipsis;}
 .font-MY{ font-family:"Microsoft YaHei","sans-serif";}
+<<<<<<< HEAD
+.w-100{width: 100%; height: 100%}
+=======
 .w-100{width: 100%;}
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
 .hide-text{  /*隐藏文字*/
     font: 0/0 a;
     color: transparent;
@@ -77,7 +81,11 @@ user-select:none;
 }
 .top-hander {
     position: relative;
+<<<<<<< HEAD
+    z-index:12;
+=======
     z-index: 9;
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
     height: 30px;
     line-height: 30px;
     background-color: #f5f5f5;
@@ -134,8 +142,15 @@ user-select:none;
     float: left;
     height: 30px;
     width: 50%;
+<<<<<<< HEAD
+    text-align: center;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing: border-box;
+=======
     padding: 0;
     text-align: center;
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
 }
 .conta-hv-nav>li:hover{
     color: #e23435;
@@ -222,7 +237,11 @@ user-select:none;
 }
 .u-g-cart {
     position: relative;
+<<<<<<< HEAD
+    z-index:11;
+=======
     z-index: 4;
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
     height: 32px;
     border: 1px solid #e3e4e5;
 }
@@ -367,6 +386,25 @@ user-select:none;
 .u-fn-cart .c-store:hover .del{
     display: block;
 }
+<<<<<<< HEAD
+/*侧边栏-购物车-s*/
+.u-fn-cart .tp-scart-gname{
+    display: block;
+    line-height: 16px;
+    max-height: 32px;
+    overflow: hidden;
+    width: 156px;
+}
+.hasshopcar.u-mn-cart .mn-c-box{
+    width: 262px;
+    margin-bottom: 10px;
+}
+.hasshopcar.u-mn-cart .del{
+    right: 5px;
+}
+/*侧边栏-购物车-e*/
+=======
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
 .u-fn-cart .goods-pic{
     width: 50px;
     height: 50px;
@@ -647,6 +685,12 @@ user-select:none;
     float: left;
     width: 1024px;
 }
+<<<<<<< HEAD
+.help-list-wrap{
+    min-height: 160px;
+}
+=======
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
 .left-help-list dl{
     float: left;
     width: 200px;
@@ -672,6 +716,36 @@ user-select:none;
 }
 /* 友情链接 */
 .friendship-links{
+<<<<<<< HEAD
+    padding-top: 10px;
+    width: 920px;
+    font-size: 14px;
+}
+.friendship-links>span{
+    float: left;
+    width: 70px;
+    line-height: 20px;
+    font-weight: bold;
+    color: #333;
+}
+.links-wrap-h{
+    float: left;
+    width: 850px;
+}
+.links-wrap-h>a{
+    float: left;
+    line-height:1;
+    margin:3px 0; 
+    padding: 0 10px;
+    color: #666;
+}
+.links-wrap-h>a+a{
+     border-left:1px solid #aaa;
+}
+.links-wrap-h>a:hover{
+    color: #e23435;
+    text-decoration: underline;
+=======
     padding-top: 16px;
     width: 920px;
     height: 18px;
@@ -689,6 +763,7 @@ user-select:none;
     padding: 0 10px;
     color: #666;
     border-right: 1px solid #ddd;
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
 }
 
 .right-contact-us{
@@ -745,6 +820,13 @@ user-select:none;
     display: inline-block;
     width: 49px;
     height: 56px;
+<<<<<<< HEAD
+    text-align: center;
+    line-height: 56px;
+    color: #e40000;
+    font-size: 21px;
+=======
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
     margin-right: 16px;
     background-image: url("../images/ico-tphsop-index.png");
     background-repeat: no-repeat;

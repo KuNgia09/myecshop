@@ -121,7 +121,6 @@
                             </div>
                             <div class="i-mc">
                                 <foreach name="goods_categories" item="second_cat">
-                                    <!-- 二级分类的父分类等于一级分类 -->
                                     <eq name="second_cat.parent_id" value="$top_cat.cat_id">
                                         <dl class="classification2 clearfix">
                                             <dt class="fl">

@@ -18,7 +18,31 @@ $(function(){
             "marginLeft": -curIndex * interval + "px"
         }, 600);
     });
-  
+    $.fn.decorateIframe = function(options) {
+        // if ($.browser.msie && $.browser.version < 7) {
+        //     var opts = $.extend({}, $.fn.decorateIframe.defaults, options);
+        //     $(this).each(function() {
+        //         var $myThis = $(this);
+        //         var divIframe = $("<iframe />");
+        //         divIframe.attr("id", opts.iframeId);
+        //         divIframe.css("position", "absolute");
+        //         divIframe.css("display", "none");
+        //         divIframe.css("display", "block");
+        //         divIframe.css("z-index", opts.iframeZIndex);
+        //         divIframe.css("border");
+        //         divIframe.css("top", "0");
+        //         divIframe.css("left", "0");
+        //         if (opts.width == 0) {
+        //             divIframe.css("width", $myThis.width() + parseInt($myThis.css("padding")) * 2 + "px");
+        //         }
+        //         if (opts.height == 0) {
+        //             divIframe.css("height", $myThis.height() + parseInt($myThis.css("padding")) * 2 + "px");
+        //         }
+        //         divIframe.css("filter", "mask(color=#fff)");
+        //         $myThis.append(divIframe);
+        //     });
+        // }
+    }
     $.fn.decorateIframe.defaults = {
             iframeId: "decorateIframe1",
             iframeZIndex: -1,
@@ -58,13 +82,13 @@ $(function(){
             changeViewImg();
         });
     }
-    // function mouseover(e) {
-    //     if ($("#winSelector").css("display") == "none") {
-    //         $("#winSelector,#bigView").show();
-    //     }
-    //     $("#winSelector").css(fixedPosition(e));
-    //     e.stopPropagation();
-    // }
+    function mouseover(e) {
+        if ($("#winSelector").css("display") == "none") {
+            $("#winSelector,#bigView").show();
+        }
+        $("#winSelector").css(fixedPosition(e));
+        e.stopPropagation();
+    }
 
     function mouseOut(e) {
         if ($("#winSelector").css("display") != "none") {

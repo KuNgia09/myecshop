@@ -10,14 +10,20 @@
 // +----------------------------------------------------------------------
 namespace app\common\tool;
 
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
 /**
  * 数组操作类
  */
 class ArrayParse implements \ArrayAccess, \Reflector
 {
+<<<<<<< HEAD
+=======
 
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
     private $array = array();
 
     protected $children = array();
@@ -102,7 +108,10 @@ class ArrayParse implements \ArrayAccess, \Reflector
         extract($data);
         
         foreach ($children as $key => &$value) {
+<<<<<<< HEAD
+=======
             
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
             foreach ($configValue as $config => $nameValue) {
                 if (array_key_exists($value['type_name'], $nameValue)) {
                     $value['value'] = $nameValue[$value['type_name']];
@@ -132,7 +141,10 @@ class ArrayParse implements \ArrayAccess, \Reflector
         $children = $obj->convertIdByData('config_class_id');
         
         foreach ($pData as $type => & $name) {
+<<<<<<< HEAD
+=======
             
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
             if (! array_key_exists($type, $children)) {
                 continue;
             }
@@ -185,9 +197,15 @@ class ArrayParse implements \ArrayAccess, \Reflector
 
     /**
      * 转换为一维数组
+<<<<<<< HEAD
+     *
+     * @param array $receive
+     * @param array $data
+=======
      * 
      * @param array $receive            
      * @param array $data            
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
      * @return array
      */
     public function oneArray(array &$receive, array $data = null)
@@ -295,4 +313,8 @@ class ArrayParse implements \ArrayAccess, \Reflector
             $methods
         ), $args) : E('该类【' . get_class($obj) . '】，没有该方法【' . $methods . '】');
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9

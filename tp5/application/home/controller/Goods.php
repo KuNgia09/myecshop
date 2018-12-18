@@ -31,7 +31,11 @@ class Goods extends Base
         }
 
         $goods=Db::name('goods')->where('goods_id', $id)->find();
+<<<<<<< HEAD
+        $goods['brand_name']=Db::name('brand')->where('brand_id', $goods['brand_id'])->value('brand_name');
+=======
         $goods['brand_name']=Db::name('brand')->where('brand_id',$goods['brand_id'])->value('brand_name');
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
         $goods_name=$goods['goods_name'];
        
         $GoodsLogic=new GoodsLogic();
@@ -39,7 +43,11 @@ class Goods extends Base
         $goods_attrs=$GoodsLogic->getAttrInfo($id);
 
         // 面包屑
+<<<<<<< HEAD
+        $breadcrumb=model('GoodsCategory')->getTitleByClassId($goods['cat_id'], 'span');
+=======
         $breadcrumb=model('GoodsCategory')->getTitleByClassId($goods['cat_id'],'span');
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
 
 
         // 查询商品的规格
@@ -69,7 +77,11 @@ class Goods extends Base
 
 
         // 商品通用信息
+<<<<<<< HEAD
+        $this->assign('goods', $goods);
+=======
         $this->assign('result', $goods);
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
         // 商品每种规格价格  库存 对应spec_goods_price表
         $this->assign('spec_goods_price', $goods_spec_info['spec_goods_price']);
         // 商品的规格名 规格项
@@ -81,6 +93,8 @@ class Goods extends Base
         $giftHtml='';
         $countHtml='';
         $gift_id=[];
+<<<<<<< HEAD
+=======
         
         $this->assign('giftHtml', $giftHtml);
         $this->assign('countHtml', $countHtml);
@@ -88,6 +102,13 @@ class Goods extends Base
         $this->assign('requstURL', url('Settlement/shopping'));
         $this->assign('breadcrumb',$breadcrumb);
         return $this->fetch('goods_info');
+>>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
         
+        $this->assign('giftHtml', $giftHtml);
+        $this->assign('countHtml', $countHtml);
+        $this->assign('gift_id', implode(',', $gift_id));
+        $this->assign('requstURL', url('Settlement/shopping'));
+        $this->assign('breadcrumb', $breadcrumb);
+        return $this->fetch('goods_info');
     }
 }
