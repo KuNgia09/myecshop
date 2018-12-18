@@ -3,6 +3,8 @@
 
   <link rel="stylesheet" href="__HOME__/css/toastr.min.css" />
   <link rel="stylesheet" href="__HOME__/css/page.css" />
+  <link rel="stylesheet" href="__HOME__/css/jquery.jqzoom.css">
+  <script src="__HOME__/js/jquery.jqzoom.js"></script>
   <!--当前位置-->
   <!--当前位置-->
   <div class="paper-current-main w">
@@ -16,11 +18,14 @@
     <div class="procDetailInner clearfix">
       <div class="procDeta-fl fl">
         <div class="preview">
-          <div id="vertical" class="bigImg">
-            <img width="400" height="400" alt="" id="midimg" data-original='' src='<if condition="isset($goods_images)">{$goods_images[0]['image_url']}</if>' />
-              
-            <div style="display:none;" id="winSelector"></div>
+          <div id="vertical" class="bigImg jqzoom">
+           
+            <img id="zoomimg" width="400" height="400" src='<if condition="isset($goods_images)">{$goods_images[0]['image_url']}</if>'
+                             jqimg='<if condition="isset($goods_images)">{$goods_images[0]['image_url']}</if>'>
+            <!-- <div style="display:none;" id="winSelector"></div> -->
           </div>
+
+
           <if condition="!empty($goods_images)">
             <div class="smallImg">
 
@@ -31,9 +36,9 @@
                     <li <if condition="$key === 0"> id="onlickImg"</if> >
           
                   <img src="{$value.image_url}" width="68" height="68"></li>
-          </foreach>
-          </ul>
-        </div>
+                  </foreach>
+                </ul>
+              </div>
         <div class="scrollbutton smallImgDown"></div>
       </div>
       </if>
@@ -50,8 +55,8 @@
       <div class="bshare-custom fr" style="margin-top: 3px;">
         <a href="javascript:;" class="fr share clearfix" style="padding-left: 0px;">
           <span class="fl">分享<a title="更多平台" class="bshare-more bshare-more-icon more-style-sharethis fl"></a>
-            <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/buttonLite.js#style=-1&amp;uuid=&amp;pophcol=2&amp;lang=zh"></script>
-            <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/bshareC0.js"></script></span>
+            <!-- <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/buttonLite.js#style=-1&amp;uuid=&amp;pophcol=2&amp;lang=zh"></script>
+            <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/bshareC0.js"></script></span> -->
         </a>
       </div>
     </div>
@@ -120,7 +125,8 @@
             <a href="javascript:;" class="fl">+</a>
           </div>
           <div class="fl">
-            {$result.stock}
+            件
+            <span>货存:<i> {$result.stock}</i>件</span>
           </div>
         </div>
 
@@ -269,6 +275,21 @@
     })
     $('.gift_price').mouseout(function () {
       $('.gift_hidden').css('display', 'none');
+    })
+  </script>
+
+  <script>
+
+    $(function(){
+       /*商品缩略图放大镜*/
+       $(".jqzoom").jqueryzoom({
+            xzoom: 500,
+            yzoom: 500,
+            offset: 1,
+            position: "right",
+            preload: 1,
+            lens: 1
+        });
     })
   </script>
 

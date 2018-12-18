@@ -24,7 +24,7 @@ class Goods extends Base
     public function showList()
     {
         //获取商品分类
-        $cats=Db::name('category')->field('cat_id,parent_id,cat_name')->select();
+        $cats=Db::name('goods_category')->field('id,parent_id,cat_name')->select();
         
         $list_cats=DbUtil::child($cats, 0);
         // Kint::dump($list_cats);
