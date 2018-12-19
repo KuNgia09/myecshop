@@ -46,7 +46,7 @@ class Base extends Controller
       $str = 'ShopsN全网开源<a style="padding: 0px" href="http://www.shopsn.net">商城系统</a>&nbsp';
       
       // 导航
-      $nav_data = cache('navigatData');
+      $nav_data = cache('nav_data');
       
       if (! $nav_data) {
           $nav_data = Db::table("db_nav")->field("id,nav_titile,link,type")
@@ -72,69 +72,7 @@ class Base extends Controller
       $OverdueCoupon = 0;
       
       $carts = [];
-      // 判断是否有session值
-      if (! empty($_SESSION['user_id'])) {
-          
-          $this->assign('userId', [
-              'user_name' => $_SESSION['user_name']
-          ]);
-          $where = [];
-          // 查询购物车条数以及相关信息
-          $where['a.user_id'] = $_SESSION['user_id'];
-          $where['a.is_del'] = 0;
-          $where['b.status'] = array(
-              'lt',
-              3
-          );
-          $cartCount = M('goods_cart as a')->field('a.id,a.goods_num,a.price_new,b.title,a.goods_id,a.buy_type,b.p_id')
-              ->join('db_goods as b ON a.goods_id=b.id')
-              ->where($where)
-              ->count();
-          
-          // dump($cartCount);exit;
-          $carts = M('goods_cart as a')->field('a.id,a.goods_num,a.price_new,b.title,a.goods_id,a.buy_type,b.p_id')
-              ->join('db_goods as b ON a.goods_id=b.id')
-              ->where($where)
-              ->order('a.buy_type ASC')
-              ->limit(5)
-              ->select();
-          $a = GoodsModel::getInitnation();
-          $carts = $a->goods_image($carts);
-          // dump($carts);exit;
-          // 查询可用优惠券数量
-          $Usable['user_id'] = $_SESSION['user_id'];
-          $Usable['use_time'] = '';
-          $Usable['use_end_time'] = array(
-              'GT',
-              time()
-          );
-          $UsableCoupon = M('coupon_list as a')->join('left join db_coupon as b on a.c_id=b.id')
-              ->where($Usable)
-              ->count();
-          // 查询已用优惠券数量
-          $Used['user_id'] = $_SESSION['user_id'];
-          $Used['use_time'] = array(
-              'neq',
-              0
-          );
-          $UsedCoupon = M('coupon_list')->where($Used)->count();
-          // 查询已过期优惠券数量
-          $Over['user_id'] = $_SESSION['user_id'];
-          $Over['use_time'] = '';
-          $Over['use_end_time'] = array(
-              'LT',
-              time()
-          );
-          $OverdueCoupon = M('coupon_list as a')->join('left join db_coupon as b on a.c_id=b.id')
-              ->where($Over)
-              ->count();
-          
-          $member_status = $_SESSION['member_status'];
-          $this->assign('member_status', $member_status);
-          $mes['user_id'] = $_SESSION['user_id'];
-          $mes['status'] = 0;
-          $this->mes_count = M('order_logistics_message')->where($mes)->count();
-      }
+      
       
       // 代金券总数
       $z_count = $UsedCoupon + $OverdueCoupon + $UsableCoupon;
@@ -175,7 +113,7 @@ class Base extends Controller
       $ip=request()->ip();
       $this->assign('areaLocation', $ip);
       
-      $this->assign("navs", $nav_data);
+      $this->assign("nav_data", $nav_data);
       
       $this->assign("article_lists", $article_lists);
       

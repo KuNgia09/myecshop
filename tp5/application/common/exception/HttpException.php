@@ -8,12 +8,15 @@ use think\exception\Handle;
  */
 class HttpException extends Handle
 {
-    public function render(\Exception $e)
-    {
-        if (config('app_debug')) {
-            return parent::render($e);
-        } else {
-            header("Location:".url('home/error/index'));
-        }
+  public function render(\Exception $e)
+  {
+    if(config('app_debug')){
+      return parent::render($e);
     }
+    else{
+      
+      header("Location:".url('home/error/index'));
+    }
+    
+  }
 }

@@ -31,6 +31,9 @@ class Goods extends Base
         }
 
         $goods=Db::name('goods')->where('goods_id', $id)->find();
+        //推荐热卖
+        $recommend_goods=Db::name('goods')->where('is_recommend',1)->order('goods_id desc')->limit(10);
+
         $goods['brand_name']=Db::name('brand')->where('brand_id',$goods['brand_id'])->value('brand_name');
         $goods_name=$goods['goods_name'];
        
@@ -65,11 +68,10 @@ class Goods extends Base
 
         $goods_images=$GoodsLogic->getImagesInfo($id);
         
-
-
-
-        // 商品通用信息
-        $this->assign('result', $goods);
+        // 当前商品信息
+        $this->assign('goods', $goods);
+        $this->assign('recommend_goods', $recommend_goods);
+        
         // 商品每种规格价格  库存 对应spec_goods_price表
         $this->assign('spec_goods_price', $goods_spec_info['spec_goods_price']);
         // 商品的规格名 规格项

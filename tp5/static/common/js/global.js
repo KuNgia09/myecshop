@@ -277,7 +277,7 @@ function ClearPicArr(val)
 {
 	$("li[rel='"+ val +"']").remove();
 	$.get(
-		"{:U('Admin/Uploadify/delupload')}",{action:"del", filename:val},function(){}
+		"{:url('Admin/Uploadify/delupload')}",{action:"del", filename:val},function(){}
 	);
 }
 /*
@@ -289,7 +289,7 @@ function ClearPicArr2(val)
 {
     $("li[rel='"+ val +"']").remove();
     $.get(
-        "{:U('Home/Uploadify/delupload')}",{action:"del", filename:val},function(){}
+        "{:url('Home/Uploadify/delupload')}",{action:"del", filename:val},function(){}
     );
 }
 	

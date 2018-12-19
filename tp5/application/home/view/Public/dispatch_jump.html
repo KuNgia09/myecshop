@@ -1,63 +1,84 @@
-<html lang="en">
-
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="__HOME__/css/base.css">
-    <link rel="stylesheet" href="__HOME__/css/style.css">
-    <title>404</title>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+    <script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config.shop_info_store_ico|default='/public/static/images/logo/storeico_default.png'}" media="screen"/>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__STATIC__/js/common.js"></script>
 </head>
 <body>
-    <!--&lt;!&ndash;头部&ndash;&gt;-->
-    <!--<div class="regiup-header w clearfix">-->
-        <!--<div class="regiup-headerLeft fl clearfix">-->
-            <!--<a href="{:url('Index/index')}" class="logo fl">-->
-                <!--<h2>亿速网络</h2>-->
-                <!--<img src="__IMG__/Pay_now_logo.png" widht="170" height="45" class="logo">-->
-            <!--</a>-->
-        <!--</div>-->
-    <!--</div>-->
-    <div class="note-content">
-        <div class="content-main w clearfix">
-            <div class="font-size fr">
-                <?php if(isset($message)) {?>
-                    <h2><?php echo($message); ?></h2>
-                <?php }else{?>
-                    <h2><?php echo($error); ?></h2>
-                <?php }?>
-                <a id="href" href="<?php echo($jumpUrl); ?>">如果没有自动跳转请点击这里...</a>
-                <p>等待时间：<b id="wait"><?php echo($waitSecond); ?></b></p>
+<!--header-s-->
+<div class="tpshop-tm-hander p">
+    <include file="public/header" w="w1224"/>
+</div>
+<!--header-e-->
+<div class="operation_success_fail w710" >
+    <?php if($code == 1) {?>
+    <!--操作成功-s--->
+    <div class="boxoperation p" >
+        <div class="success_fial_img fl">
+            <img src="__STATIC__/images/right_06.jpg"/>
+        </div>
+        <div class="success_describe fl">
+            <div class="sd1">
+                <i class="suc"></i>
+                <span><?php echo(strip_tags($msg)); ?></span>
+            </div>
+            <div class="sd2">
+                <a id="href" href="<?php echo($url); ?>">页面跳转中...</a>
+                <span>等待时间：<em id="wait"><?php echo($wait); ?></em></span>
+            </div>
+            <div class="sd3">
+                <a href="/">首页</a>
+                <a href="/index.php?m=Home&c=Cart&a=index">购物车</a>
+                <a href="/index.php?m=Home&c=User&a=index">用户中心</a>
             </div>
         </div>
     </div>
-    <!--底部-->
-    <ul class="regi-footer">
-        <li>
-            <a href="javascript:;">关于我们</a>
-            <a href="javascript:;">联系我们</a>
-            <a href="javascript:;">加盟我们</a>
-            <a href="javascript:;">商城APP</a>
-            <a href="javascript:;" class="active">友情链接</a>
-        </li>
-        <li>
-            <span>{$record_number}</span>
-            <span class="active">有任何问题请联系我们在线客服 电话：{$intnet_phone}</span>
-        </li>
-        <li>© 20016-2018 亿速网络用品 版权所有，并保留所有权利</li>
-    </ul>
-
-<script src="__CDN_JQ__"></script>
+    <!--操作成功-s--->
+<?php }else{?>
+    <!--操作失败-s--->
+    <div class="boxoperation p" >
+        <div class="success_fial_img fl">
+            <img src="__STATIC__/images/wrong_05.jpg"/>
+        </div>
+        <div class="success_describe fl">
+            <div class="sd1">
+                <i class="wro"></i>
+                <span><?php echo(strip_tags($msg)); ?></span>
+            </div>
+            <div class="sd2">
+                <a id="href" href="<?php echo($url); ?>">页面跳转中...</a>
+                <span>等待时间：<em id="wait"><?php echo($wait); ?></em></span>
+            </div>
+            <div class="sd3">
+                <a href="/">首页</a>
+                <a href="/index.php?m=Home&c=Cart&a=index">购物车</a>
+                <a href="/index.php?m=Home&c=User&a=index">用户中心</a>
+            </div>
+        </div>
+    </div>
+    <!--操作失败-e--->
+    <?php }?>
+</div>
+<script src="__STATIC__/js/headerfooter.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-    (function(){
-        var wait = document.getElementById('wait'),href = document.getElementById('href').href;
-        var interval = setInterval(function(){
+    /**/
+    (function () {
+        var wait = document.getElementById('wait'), href = document.getElementById('href').href;
+        var interval = setInterval(function () {
             var time = --wait.innerHTML;
-            if(time <= 0) {
+            if (time <= 0) {
                 location.href = href;
                 clearInterval(interval);
-            };
+            }
+            ;
         }, 1000);
     })();
+
 </script>
 </body>
-
 </html>

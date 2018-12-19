@@ -11,14 +11,6 @@
 
 namespace app\common\traitClass;
 
-<<<<<<< HEAD
-/**
- * 头部trait
- */
-trait InternetTopTrait
-{
-    private static function userDataExits()
-=======
 
 
 /**
@@ -27,7 +19,6 @@ trait InternetTopTrait
 trait InternetTopTrait 
 {
     private static function userDataExits ()
->>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
     {
         // 获取购物车&用户信息
         return $name = M('user')->field('user_name')->where(['id' => $_SESSION['user_id']])->find();
@@ -51,25 +42,15 @@ trait InternetTopTrait
     
     protected function isLogin($isPjax = false)
     {
-<<<<<<< HEAD
-        if (empty($_SESSION['user_id']) && !$isPjax) {
-            $this->redirect('Public/login');
-        } elseif (empty($_SESSION['user_id']) && $isPjax) {
-=======
         if(empty($_SESSION['user_id']) && !$isPjax) {
             $this->redirect('Public/login');
         } else if (empty($_SESSION['user_id']) && $isPjax) {
->>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
             $this->ajaxReturnData(null, 0, '请登录');
         }
     }
     
     /**
-<<<<<<< HEAD
-     * 分站点
-=======
      * 分站点 
->>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
      */
     public function getSite()
     {
@@ -99,11 +80,7 @@ trait InternetTopTrait
     }
     
     /**
-<<<<<<< HEAD
-     * 根据当前ip地址 获取所在区域
-=======
      * 根据当前ip地址 获取所在区域 
->>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
      */
     public function getLocationArea($name='country')
     {
@@ -119,11 +96,7 @@ trait InternetTopTrait
         $this->display('public/areaList');
     }
     
-<<<<<<< HEAD
-    public function getFamily()
-=======
     public function getFamily ()
->>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
     {
         $str = S('str');
         
@@ -144,11 +117,7 @@ trait InternetTopTrait
     /**
      * 文章分类页
      */
-<<<<<<< HEAD
-    public function arctile()
-=======
     public function arctile ()
->>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9
     {
         $article_category_model = D('Article');
         if (! $article_lists = S('article_lists')) {
@@ -158,9 +127,5 @@ trait InternetTopTrait
         }
         return $article_lists;
     }
-<<<<<<< HEAD
-}
-=======
     
 }
->>>>>>> e5b37835f76dcc04fcd66ebfa9dfdb818ae619b9

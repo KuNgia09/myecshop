@@ -1,15 +1,9 @@
 <?php
-/**
- * tpshop
- * ============================================================================
- * * 版权所有 2015-2027 深圳搜豹网络科技有限公司，并保留所有权利。
- * 网站地址: http://www.tp-shop.cn
- * ----------------------------------------------------------------------------
- * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用 .
- * 不允许对程序代码以任何形式任何目的的再发布。
- * 采用最新Thinkphp5助手函数特性实现单字母函数M D U等简写方式
- * $Author: IT宇宙人 2015-08-10 $
- */
+
+
+error_reporting(E_ERROR | E_PARSE );
+// error_reporting(0);
+
 use think\Log;
 use think\Db;
 define('EXTEND_MODULE', 1);
@@ -94,12 +88,13 @@ function goods_thum_images($goods_id, $width, $height,$item_id=0)
     if (is_file($path . $goods_thumb_name . '.gif')) return '/' . $path . $goods_thumb_name . '.gif';
     if (is_file($path . $goods_thumb_name . '.png')) return '/' . $path . $goods_thumb_name . '.png';
     $original_img = '';//先定义空字符变量
+    // 获取每种规格的图片
     if($item_id){
         $original_img = Db::name('spec_goods_price')->where(["goods_id"=>$goods_id,'item_id'=>$item_id])->cache(true, 30, 'original_img_cache')->value('spec_img');
 
     }
     if(empty($original_img)){
-        $original_img = Db::name('goods')->where("goods_id", $goods_id)->cache(true, 30, 'original_img_cache')->value('original_img');
+        $original_img = Db::name('goods_images')->where("goods_id", $goods_id)->cache(true, 30, 'original_img_cache')->value('image_url');
     }
 
 
@@ -107,12 +102,12 @@ function goods_thum_images($goods_id, $width, $height,$item_id=0)
         return '/public/images/icon_goods_thumb_empty_300.png';
     }
     
-    if(tpCache('oss.oss_switch')){
-        $ossClient = new \app\common\logic\OssLogic;
-        if (($ossUrl = $ossClient->getGoodsThumbImageUrl($original_img, $width, $height))) {
-            return $ossUrl;
-        }    
-    } 
+    // if(tpCache('oss.oss_switch')){
+    //     $ossClient = new \app\common\logic\OssLogic;
+    //     if (($ossUrl = $ossClient->getGoodsThumbImageUrl($original_img, $width, $height))) {
+    //         return $ossUrl;
+    //     }    
+    // } 
 
     $original_img = '.' . $original_img; // 相对路径
     if (!is_file($original_img)) {
@@ -159,12 +154,12 @@ function get_sub_images($sub_img, $goods_id, $width, $height)
     if (is_file($path . $goods_thumb_name . '.gif')) return '/' . $path . $goods_thumb_name . '.gif';
     if (is_file($path . $goods_thumb_name . '.png')) return '/' . $path . $goods_thumb_name . '.png';
 
-    if(tpCache('oss.oss_switch')){
-        $ossClient = new \app\common\logic\OssLogic;
-        if (($ossUrl = $ossClient->getGoodsAlbumThumbUrl($sub_img['image_url'], $width, $height))) {
-            return $ossUrl;
-        }
-    }
+    // if(tpCache('oss.oss_switch')){
+    //     $ossClient = new \app\common\logic\OssLogic;
+    //     if (($ossUrl = $ossClient->getGoodsAlbumThumbUrl($sub_img['image_url'], $width, $height))) {
+    //         return $ossUrl;
+    //     }
+    // }
     
     $original_img = '.' . $sub_img['image_url']; //相对路径
     if (!is_file($original_img)) {
